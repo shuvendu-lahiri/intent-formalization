@@ -4,7 +4,7 @@ This repository contains the artefacts from several works around generating and 
 
 - [Can Large Language Models Transform Natural Language Intent into Formal Method Postconditions? (FSE'24 article)](nl2postcondition-fse2024)
 - [Evaluating LLM-driven User-Intent Formalization for Verification-Aware Languages (FMCAD'24 article)](eval-formal-specs-fmcad2024)
-- [Evaluating Formal Specifications of AutoCLRS Algorithms via Symbolic Testing](eval-autoclrs-specs)
+- [Evaluating Formal Specifications of AutoCLRS Algorithms via Symbolic Testing (March '26)](eval-autoclrs-specs)
 
 ## Contributing
 
