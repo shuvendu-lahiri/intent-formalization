@@ -1,8 +1,10 @@
-# Evaluating Formal Specifications of AutoCLRS Algorithms
+# Intent Formalization for AutoCLRS Algorithms
 
 Symbolic testing of F* specifications from the
 [AutoCLRS](https://github.com/FStarLang/AutoCLRS) repository — verified
 implementations of 52 algorithms from *Introduction to Algorithms* (CLRS).
+
+See the [Intent Formalization blog](https://risemsr.github.io/blog/2026-03-05-shuvendu-intent-formalization/) for an overview of the research direction.
 
 Uses the **soundness and completeness testing** approach from:
 

@@ -6,7 +6,7 @@ See the [Intent Formalization blog](https://risemsr.github.io/blog/2026-03-05-sh
 
 - [Can Large Language Models Transform Natural Language Intent into Formal Method Postconditions? (FSE'24 article)](nl2postcondition-fse2024)
 - [Evaluating LLM-driven User-Intent Formalization for Verification-Aware Languages (FMCAD'24 article)](eval-formal-specs-fmcad2024)
-- [Evaluating Formal Specifications of AutoCLRS Algorithms via Symbolic Testing (March '26)](eval-autoclrs-specs)
+- [Intent Formalization for AutoCLRS Algorithms (March '26)](eval-autoclrs-specs)
 
 ## Contributing
 
