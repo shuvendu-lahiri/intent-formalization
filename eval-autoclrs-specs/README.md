@@ -45,74 +45,81 @@ for details on the verified CLRS algorithms.
 ## Evaluation Results
 
 52 algorithms evaluated across 23 CLRS chapters. Each has 3 test cases for
-soundness and completeness.
+soundness and completeness. See the full [Spec Fidelity Audit Report](SPEC_AUDIT_REPORT.md)
+for details on how faithfully each test encodes the actual AutoCLRS postcondition.
 
-**Summary: 52/52 SOUND, 30/52 COMPLETE**
+**Summary: 52/52 SOUND | 34/52 faithful to AutoCLRS spec (30 complete) | 18/52 weakened spec (under revision)**
 
-| # | Algorithm | CLRS Ch | Specification φ(x,y) | Soundness | Completeness | Notes |
-|---|-----------|---------|----------------------|-----------|--------------|-------|
-| 1 | Insertion Sort | Ch02 | sorted(y) ∧ permutation(x,y) | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
-| 2 | Merge Sort | Ch02 | sorted(y) ∧ permutation(x,y) | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
-| 3 | Heap Sort | Ch06 | sorted(y) ∧ permutation(x,y) | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
-| 4 | Quick Sort | Ch07 | sorted(y) ∧ permutation(x,y) | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
-| 5 | Counting Sort | Ch08 | sorted(y) ∧ perm(x,y) ∧ in_range | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L625) · [soundness](agent/algorithms.py#L632) · [completeness](agent/algorithms.py#L676) |
-| 6 | Binary Search | Ch04 | found⇒arr[i]=key ∧ ¬found⇒key∉arr | ✅ 3/3 | ⚠️ 2/3 | **Genuinely incomplete** — spec allows any `r < 0` for not-found · [tests](agent/algorithms.py#L207) · [soundness](agent/algorithms.py#L214) · [completeness](agent/algorithms.py#L250) |
-| 7 | GCD | Ch31 | divides(g,a) ∧ divides(g,b) ∧ greatest | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L155) · [soundness](agent/algorithms.py#L162) · [completeness](agent/algorithms.py#L181) |
-| 8 | Max Subarray | Ch04 | ∃lo,hi. sum(arr[lo..hi])=r ∧ maximal | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L307) · [soundness](agent/algorithms.py#L314) · [completeness](agent/algorithms.py#L365) |
-| 9 | Modular Exp | Ch31 | result = b^e mod m ∧ 0 ≤ result < m | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L422) · [soundness](agent/algorithms.py#L429) · [completeness](agent/algorithms.py#L445) |
-| 10 | Cross Product | Ch33 | r = (p2−p1) × (p3−p1) | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L474) · [soundness](agent/algorithms.py#L481) · [completeness](agent/algorithms.py#L497) |
-| 11 | Segment Intersection | Ch33 | orientation-based intersection test | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L529) · [soundness](agent/algorithms.py#L539) · [completeness](agent/algorithms.py#L576) |
-| 12 | Stack (push/pop) | Ch10 | pop(push(s,x)) = (x, s) | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L744) · [soundness](agent/algorithms.py#L752) · [completeness](agent/algorithms.py#L780) |
-| 13 | Queue (enq/deq) | Ch10 | dequeue returns FIFO order | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L817) · [soundness](agent/algorithms.py#L824) · [completeness](agent/algorithms.py#L853) |
-| 14 | Topological Sort | Ch22 | valid topo order ∧ all_distinct | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — multiple valid orderings · [tests](agent/algorithms.py#L889) · [soundness](agent/algorithms.py#L899) · [completeness](agent/algorithms.py#L963) |
-| 15 | LCS Length | Ch15 | r = lcs_length(x, y, \|x\|, \|y\|) | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1030) · [soundness](agent/algorithms.py#L1037) · [completeness](agent/algorithms.py#L1072) |
-| 16 | String Matching | Ch32 | count_matches(text, pattern) = r | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) · [soundness](agent/algorithms.py#L1127) · [completeness](agent/algorithms.py#L1166) |
-| 17 | Radix Sort | Ch08 | sorted(y) ∧ permutation(x,y) | ✅ 3/3 | ✅ 3/3 | Reuses sorting spec · [tests](agent/algorithms.py#L53) |
-| 18 | Bucket Sort | Ch08 | sorted(y) ∧ permutation(x,y) | ✅ 3/3 | ✅ 3/3 | Reuses sorting spec · [tests](agent/algorithms.py#L53) |
-| 19 | Minimum | Ch09 | m = min(arr) ∧ m ∈ arr | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1220) · [soundness](agent/algorithms.py#L1227) · [completeness](agent/algorithms.py#L1249) |
-| 20 | Maximum | Ch09 | m = max(arr) ∧ m ∈ arr | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1282) · [soundness](agent/algorithms.py#L1289) · [completeness](agent/algorithms.py#L1310) |
-| 21 | Min-Max | Ch09 | min ∧ max simultaneously | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1343) · [soundness](agent/algorithms.py#L1350) · [completeness](agent/algorithms.py#L1372) |
-| 22 | Quickselect | Ch09 | kth smallest element | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — count-based spec doesn't pin output · [tests](agent/algorithms.py#L1403) · [soundness](agent/algorithms.py#L1410) · [completeness](agent/algorithms.py#L1433) |
-| 23 | Extended GCD | Ch31 | gcd(a,b) = g ∧ a·x + b·y = g | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1466) · [soundness](agent/algorithms.py#L1473) · [completeness](agent/algorithms.py#L1490) |
-| 24 | Matrix Multiply | Ch04 | C[i,j] = dot_product(A_row_i, B_col_j) | ✅ 3/3 | ❌ 0/3 | Z3 can't prove uniqueness · [tests](agent/algorithms.py#L1519) · [soundness](agent/algorithms.py#L1526) · [completeness](agent/algorithms.py#L1568) |
-| 25 | Partition (Lomuto) | Ch07 | elements ≤ pivot before, > pivot after | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — multiple valid partitions · [tests](agent/algorithms.py#L1621) · [soundness](agent/algorithms.py#L1631) · [completeness](agent/algorithms.py#L1669) |
-| 26 | Linked List Insert | Ch10 | head = new_elem ∧ tail = old_list | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1710) · [soundness](agent/algorithms.py#L1717) · [completeness](agent/algorithms.py#L1738) |
-| 27 | Linked List Delete | Ch10 | element removed, rest preserved | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1765) · [soundness](agent/algorithms.py#L1772) · [completeness](agent/algorithms.py#L1801) |
-| 28 | Hash Table | Ch11 | insert/lookup by key mod table_size | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1835) · [soundness](agent/algorithms.py#L1842) · [completeness](agent/algorithms.py#L1864) |
-| 29 | BST Search | Ch12 | found ⇒ key in tree, ¬found ⇒ key ∉ tree | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1892) · [soundness](agent/algorithms.py#L1899) · [completeness](agent/algorithms.py#L1943) |
-| 30 | BST Inorder | Ch12 | result = sorted keys from BST | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1990) · [soundness](agent/algorithms.py#L1997) · [completeness](agent/algorithms.py#L2037) |
-| 31 | Rod Cutting | Ch15 | revenue ≥ each piece price | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — spec doesn't force optimality · [tests](agent/algorithms.py#L2081) · [soundness](agent/algorithms.py#L2088) · [completeness](agent/algorithms.py#L2120) |
-| 32 | BFS Distance | Ch22 | shortest unweighted path distance | ✅ 3/3 | ❌ 0/3 | Z3 can't prove uniqueness · [tests](agent/algorithms.py#L2148) · [soundness](agent/algorithms.py#L2155) · [completeness](agent/algorithms.py#L2196) |
-| 33 | DFS Times | Ch22 | d[v] < f[v] ∧ parenthesis theorem | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — timestamps depend on traversal order · [tests](agent/algorithms.py#L2581) · [soundness](agent/algorithms.py#L2591) · [completeness](agent/algorithms.py#L2625) |
-| 34 | Dijkstra | Ch24 | dist[v] ≤ dist[u] + w(u,v) ∧ reachable | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — triangle inequality doesn't pin distances · [tests](agent/algorithms.py#L2240) · [soundness](agent/algorithms.py#L2249) · [completeness](agent/algorithms.py#L2295) |
-| 35 | Bellman-Ford | Ch24 | dist[v] ≤ dist[u] + w(u,v) ∧ reachable | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — same as Dijkstra · [tests](agent/algorithms.py#L2328) · [soundness](agent/algorithms.py#L2335) · [completeness](agent/algorithms.py#L2376) |
-| 36 | Floyd-Warshall | Ch25 | all-pairs shortest ∧ triangle inequality | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — triangle inequality necessary but not sufficient · [tests](agent/algorithms.py#L2407) · [soundness](agent/algorithms.py#L2415) · [completeness](agent/algorithms.py#L2460) |
-| 37 | Activity Selection | Ch16 | max compatible non-overlapping activities | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L2498) · [soundness](agent/algorithms.py#L2505) · [completeness](agent/algorithms.py#L2549) |
-| 38 | KMP String Match | Ch32 | count_matches(text, pattern) = r | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) · [soundness](agent/algorithms.py#L1127) · [completeness](agent/algorithms.py#L1166) |
-| 39 | Rabin-Karp | Ch32 | count_matches(text, pattern) = r | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) · [soundness](agent/algorithms.py#L1127) · [completeness](agent/algorithms.py#L1166) |
-| 40 | BST Insert | Ch12 | sorted inorder ∧ contains new key | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** · [tests](agent/algorithms.py#L2652) · [soundness](agent/algorithms.py#L2664) · [completeness](agent/algorithms.py#L2700) |
-| 41 | BST Delete | Ch12 | sorted inorder ∧ key removed | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** · [tests](agent/algorithms.py#L2732) · [soundness](agent/algorithms.py#L2739) · [completeness](agent/algorithms.py#L2774) |
-| 42 | Matrix Chain | Ch15 | min scalar multiplications | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L2808) · [soundness](agent/algorithms.py#L2815) · [completeness](agent/algorithms.py#L2849) |
-| 43 | Huffman Coding | Ch16 | cost ≥ 0 (weak spec) | ✅ 3/3 | ❌ 0/3 | **Weak spec** · [tests](agent/algorithms.py#L2887) · [soundness](agent/algorithms.py#L2894) · [completeness](agent/algorithms.py#L2916) |
-| 44 | DAG Shortest Paths | Ch24 | triangle inequality on DAG | ✅ 3/3 | ❌ 0/3 | Same as Dijkstra · [tests](agent/algorithms.py#L2944) · [soundness](agent/algorithms.py#L2951) · [completeness](agent/algorithms.py#L2986) |
-| 45 | Kruskal MST | Ch23 | MST weight ≥ 0 (weak spec) | ✅ 3/3 | ❌ 0/3 | **Weak spec** · [tests](agent/algorithms.py#L3024) · [soundness](agent/algorithms.py#L3031) · [completeness](agent/algorithms.py#L3048) |
-| 46 | Prim MST | Ch23 | MST weight ≥ 0 (weak spec) | ✅ 3/3 | ❌ 0/3 | **Weak spec** · [tests](agent/algorithms.py#L3070) · [soundness](agent/algorithms.py#L3077) · [completeness](agent/algorithms.py#L3094) |
-| 47 | Union-Find | Ch21 | connected(u,v) matches union ops | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L3116) · [soundness](agent/algorithms.py#L3123) · [completeness](agent/algorithms.py#L3183) |
-| 48 | Primality Test | Ch31 | is_prime(n) = deterministic check | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L3204) · [soundness](agent/algorithms.py#L3211) · [completeness](agent/algorithms.py#L3240) |
-| 49 | Graham Scan | Ch33 | hull_size bounds (weak spec) | ✅ 3/3 | ⚠️ 1/3 | **Weak spec** · [tests](agent/algorithms.py#L3272) · [soundness](agent/algorithms.py#L3279) · [completeness](agent/algorithms.py#L3297) |
-| 50 | Edmonds-Karp | Ch26 | max flow ≥ 0 ∧ capacities ≥ 0 | ✅ 3/3 | ❌ 0/3 | **Weak spec** · [tests](agent/algorithms.py#L3319) · [soundness](agent/algorithms.py#L3326) · [completeness](agent/algorithms.py#L3355) |
-| 51 | Vertex Cover | Ch35 | cover_size ≤ n (weak spec) | ✅ 3/3 | ❌ 0/3 | **Weak spec** · [tests](agent/algorithms.py#L3377) · [soundness](agent/algorithms.py#L3384) · [completeness](agent/algorithms.py#L3401) |
-| 52 | Partial Select Sort | Ch09 | k elements sorted | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** · [tests](agent/algorithms.py#L3423) · [soundness](agent/algorithms.py#L3430) · [completeness](agent/algorithms.py#L3458) |
+### Part 1: Faithful Specs (34 algorithms)
 
-### Incompleteness Analysis
+These tests encode the same property as the AutoCLRS postcondition (modulo
+complexity bounds, which we intentionally skip). Completeness results are **reliable**.
 
-| Category | Count | Algorithms | Explanation |
-|----------|-------|-----------|-------------|
-| **Non-deterministic output** | 7 | Topo Sort, DFS, Partition, BST Insert/Delete, Quickselect, Partial Select | Multiple valid outputs exist for a given input |
-| **Weak spec (genuine bug)** | 2 | Binary Search, Rod Cutting | Spec is too permissive |
-| **Relational spec insufficient** | 4 | Dijkstra, Bellman-Ford, Floyd-Warshall, DAG SP | Triangle inequality necessary but not sufficient |
-| **Weak spec (minimal)** | 6 | Huffman, Kruskal, Prim, Convex Hull, Max Flow, Vertex Cover | Only encodes bounds, not full property |
-| **Z3 limitation** | 2 | Matrix Multiply, BFS Distance | Spec likely complete but Z3 can't prove |
+| # | Algorithm | Ch | AutoCLRS Postcondition | Sound | Complete | Notes |
+|---|-----------|-----|----------------------|-------|----------|-------|
+| 1 | Insertion Sort | 02 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
+| 2 | Merge Sort | 02 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
+| 3 | Heap Sort | 06 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
+| 4 | Quick Sort | 07 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
+| 5 | Counting Sort | 08 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L625) · [soundness](agent/algorithms.py#L632) · [completeness](agent/algorithms.py#L676) |
+| 6 | Radix Sort | 08 | `sorted_multi_digit ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) |
+| 7 | Bucket Sort | 08 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) |
+| 8 | GCD | 31 | `result == gcd_spec(a,b)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L155) · [soundness](agent/algorithms.py#L162) · [completeness](agent/algorithms.py#L181) |
+| 9 | Extended GCD | 31 | `gcd ∧ a·x+b·y=g` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1466) · [soundness](agent/algorithms.py#L1473) · [completeness](agent/algorithms.py#L1490) |
+| 10 | Modular Exp | 31 | `result == mod_exp_spec(b,e,m)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L422) · [soundness](agent/algorithms.py#L429) · [completeness](agent/algorithms.py#L445) |
+| 11 | Cross Product | 33 | `result == cross_product_spec(...)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L474) · [soundness](agent/algorithms.py#L481) · [completeness](agent/algorithms.py#L497) |
+| 12 | Segment Intersection | 33 | `result == segments_intersect_spec(...)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L529) · [soundness](agent/algorithms.py#L539) · [completeness](agent/algorithms.py#L576) |
+| 13 | Minimum | 09 | `∃k. s0[k]==min ∧ ∀k. min≤s0[k]` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1220) · [soundness](agent/algorithms.py#L1227) · [completeness](agent/algorithms.py#L1249) |
+| 14 | Maximum | 09 | `∃k. s0[k]==max ∧ ∀k. max≥s0[k]` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1282) · [soundness](agent/algorithms.py#L1289) · [completeness](agent/algorithms.py#L1310) |
+| 15 | Min-Max | 09 | min ∧ max simultaneously | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1343) · [soundness](agent/algorithms.py#L1350) · [completeness](agent/algorithms.py#L1372) |
+| 16 | Stack (push/pop) | 10 | `pop(push(s,x)) = (x, s)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L744) · [soundness](agent/algorithms.py#L752) · [completeness](agent/algorithms.py#L780) |
+| 17 | Queue (enq/deq) | 10 | `dequeue FIFO order` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L817) · [soundness](agent/algorithms.py#L824) · [completeness](agent/algorithms.py#L853) |
+| 18 | Linked List Insert | 10 | `is_dlist new_head (x::l)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1710) · [soundness](agent/algorithms.py#L1717) · [completeness](agent/algorithms.py#L1738) |
+| 19 | Linked List Delete | 10 | `is_dlist (remove_first k l)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1765) · [soundness](agent/algorithms.py#L1772) · [completeness](agent/algorithms.py#L1801) |
+| 20 | Hash Table | 11 | `key_in_table ∧ key_findable` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1835) · [soundness](agent/algorithms.py#L1842) · [completeness](agent/algorithms.py#L1864) |
+| 21 | BST Search | 12 | `result == bst_search(ft,k)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1892) · [soundness](agent/algorithms.py#L1899) · [completeness](agent/algorithms.py#L1943) |
+| 22 | BST Inorder | 12 | sorted keys from BST | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1990) · [soundness](agent/algorithms.py#L1997) · [completeness](agent/algorithms.py#L2037) |
+| 23 | LCS Length | 15 | `result == lcs_length(x,y,m,n)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1030) · [soundness](agent/algorithms.py#L1037) · [completeness](agent/algorithms.py#L1072) |
+| 24 | Matrix Chain | 15 | `result == mc_result(dims,n)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L2808) · [soundness](agent/algorithms.py#L2815) · [completeness](agent/algorithms.py#L2849) |
+| 25 | String Matching | 32 | count_matches correctness | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) · [soundness](agent/algorithms.py#L1127) · [completeness](agent/algorithms.py#L1166) |
+| 26 | KMP String Match | 32 | prefix function correctness | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) |
+| 27 | Rabin-Karp | 32 | rolling hash match | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) |
+| 28 | Activity Selection | 16 | compatible ∧ maximum count | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L2498) · [soundness](agent/algorithms.py#L2505) · [completeness](agent/algorithms.py#L2549) |
+| 29 | Union-Find | 21 | `pure_find` equivalence | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L3116) · [soundness](agent/algorithms.py#L3123) · [completeness](agent/algorithms.py#L3183) |
+| 30 | Primality Test | 31 | deterministic is_prime | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L3204) · [soundness](agent/algorithms.py#L3211) · [completeness](agent/algorithms.py#L3240) |
+| 31 | Topological Sort | 22 | `all_distinct ∧ is_topological_order` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — multiple valid orderings |
+| 32 | DFS Times | 22 | `d[u]<f[u] ∧ pred_edge_ok` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — timestamps depend on traversal order |
+| 33 | Partition (Lomuto) | 07 | `between_bounds ∧ permutation ∧ pivot` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — multiple valid partitions |
+| 34 | Matrix Multiply | 04 | `mat_mul_correct(A,B,C,n)` | ✅ 3/3 | ❌ 0/3 | Z3 can't prove uniqueness |
+
+**Faithful completeness: 30/34 pass.** The 4 failures are genuine (non-deterministic output or Z3 limitation).
+
+### Part 2: Weakened Specs (18 algorithms — under revision)
+
+These tests encode a **weaker property** than the actual AutoCLRS postcondition.
+Completeness failures may be artifacts of testing a weaker spec. See the
+[Spec Fidelity Audit Report](SPEC_AUDIT_REPORT.md) for details on each discrepancy.
+
+| # | Algorithm | Ch | AutoCLRS Spec | What We Test | Gap | Sound | Complete |
+|---|-----------|-----|--------------|-------------|-----|-------|----------|
+| 35 | Binary Search | 04 | `result==len` for not-found | `r < 0` for not-found | Different convention | ✅ 3/3 | ⚠️ 2/3 |
+| 36 | Max Subarray | 04 | Pure function `(sum,lo,hi)` | ∃ lo,hi. sum=max ∧ maximal | Effectively equivalent | ✅ 3/3 | ✅ 3/3 |
+| 37 | Quickselect | 09 | `result == select_spec(s0,k)` | Count-based kth smallest | Missing `select_spec` | ✅ 3/3 | ❌ 0/3 |
+| 38 | Rod Cutting | 15 | `result == optimal_revenue(prices,n)` | revenue ≥ each piece | Only lower bound | ✅ 3/3 | ❌ 0/3 |
+| 39 | BFS Distance | 22 | `reachable_in(adj,n,src,w,dist[w])` | Triangle inequality-like | Missing reachability | ✅ 3/3 | ❌ 0/3 |
+| 40 | Dijkstra | 24 | `dist[v] == sp_dist(w,n,src,v)` | Triangle inequality | **Much weaker** | ✅ 3/3 | ❌ 0/3 |
+| 41 | Bellman-Ford | 24 | `dist[v] ≤ sp_dist` ∧ triangle | Triangle inequality only | Missing `sp_dist` | ✅ 3/3 | ❌ 0/3 |
+| 42 | Floyd-Warshall | 25 | `contents == fw_outer(c,n,0)` | Triangle inequality | Missing DP equality | ✅ 3/3 | ❌ 0/3 |
+| 43 | DAG Shortest Paths | 24 | `sp_dist` equality | Triangle inequality | Same as Dijkstra | ✅ 3/3 | ❌ 0/3 |
+| 44 | BST Insert | 12 | `bst_subtree == bst_insert(ft,k)` | Sorted inorder ∧ contains | Missing functional spec | ✅ 3/3 | ❌ 0/3 |
+| 45 | BST Delete | 12 | `bst_subtree == bst_delete(ft,k)` | Sorted inorder ∧ removed | Missing functional spec | ✅ 3/3 | ❌ 0/3 |
+| 46 | Huffman Coding | 16 | `cost == greedy_cost ∧ wpl_optimal` | cost ≥ 0 | Only non-negative | ✅ 3/3 | ❌ 0/3 |
+| 47 | Kruskal MST | 23 | `result_is_forest_adj(edges)` | weight ≥ 0 | Missing forest property | ✅ 3/3 | ❌ 0/3 |
+| 48 | Prim MST | 23 | `prim_correct(key,parent,w,n,src)` | weight ≥ 0 | Missing MST correctness | ✅ 3/3 | ❌ 0/3 |
+| 49 | Graham Scan | 33 | `result == find_bottom_spec(xs,ys)` | hull_size bounds | Missing functional spec | ✅ 3/3 | ⚠️ 1/3 |
+| 50 | Edmonds-Karp | 26 | `valid_flow ∧ no_augmenting_path` | flow ≥ 0 | Missing max-flow property | ✅ 3/3 | ❌ 0/3 |
+| 51 | Vertex Cover | 35 | Not found in AutoCLRS | cover_size ≤ n | N/A | ✅ 3/3 | ❌ 0/3 |
+| 52 | Partial Select Sort | 09 | `sorted_prefix ∧ prefix_leq_suffix ∧ perm` | k elements sorted | Missing prefix_leq_suffix | ✅ 3/3 | ❌ 0/3 |
 
 ## Reproducing Results
 
