@@ -62,8 +62,8 @@ complexity bounds, which we intentionally skip). Completeness results are **reli
 | 3 | Heap Sort | 06 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
 | 4 | Quick Sort | 07 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
 | 5 | Counting Sort | 08 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L625) · [soundness](agent/algorithms.py#L632) · [completeness](agent/algorithms.py#L676) |
-| 6 | Radix Sort | 08 | `sorted_multi_digit ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) |
-| 7 | Bucket Sort | 08 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) |
+| 6 | Radix Sort | 08 | `sorted_multi_digit ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
+| 7 | Bucket Sort | 08 | `sorted ∧ permutation` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L53) · [soundness](agent/algorithms.py#L60) · [completeness](agent/algorithms.py#L95) |
 | 8 | GCD | 31 | `result == gcd_spec(a,b)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L155) · [soundness](agent/algorithms.py#L162) · [completeness](agent/algorithms.py#L181) |
 | 9 | Extended GCD | 31 | `gcd ∧ a·x+b·y=g` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1466) · [soundness](agent/algorithms.py#L1473) · [completeness](agent/algorithms.py#L1490) |
 | 10 | Modular Exp | 31 | `result == mod_exp_spec(b,e,m)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L422) · [soundness](agent/algorithms.py#L429) · [completeness](agent/algorithms.py#L445) |
@@ -82,15 +82,15 @@ complexity bounds, which we intentionally skip). Completeness results are **reli
 | 23 | LCS Length | 15 | `result == lcs_length(x,y,m,n)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1030) · [soundness](agent/algorithms.py#L1037) · [completeness](agent/algorithms.py#L1072) |
 | 24 | Matrix Chain | 15 | `result == mc_result(dims,n)` | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L2808) · [soundness](agent/algorithms.py#L2815) · [completeness](agent/algorithms.py#L2849) |
 | 25 | String Matching | 32 | count_matches correctness | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) · [soundness](agent/algorithms.py#L1127) · [completeness](agent/algorithms.py#L1166) |
-| 26 | KMP String Match | 32 | prefix function correctness | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) |
-| 27 | Rabin-Karp | 32 | rolling hash match | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) |
+| 26 | KMP String Match | 32 | prefix function correctness | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) · [soundness](agent/algorithms.py#L1127) · [completeness](agent/algorithms.py#L1166) |
+| 27 | Rabin-Karp | 32 | rolling hash match | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L1120) · [soundness](agent/algorithms.py#L1127) · [completeness](agent/algorithms.py#L1166) |
 | 28 | Activity Selection | 16 | compatible ∧ maximum count | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L2498) · [soundness](agent/algorithms.py#L2505) · [completeness](agent/algorithms.py#L2549) |
 | 29 | Union-Find | 21 | `pure_find` equivalence | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L3116) · [soundness](agent/algorithms.py#L3123) · [completeness](agent/algorithms.py#L3183) |
 | 30 | Primality Test | 31 | deterministic is_prime | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L3204) · [soundness](agent/algorithms.py#L3211) · [completeness](agent/algorithms.py#L3240) |
-| 31 | Topological Sort | 22 | `all_distinct ∧ is_topological_order` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — multiple valid orderings |
-| 32 | DFS Times | 22 | `d[u]<f[u] ∧ pred_edge_ok` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — timestamps depend on traversal order |
-| 33 | Partition (Lomuto) | 07 | `between_bounds ∧ permutation ∧ pivot` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — multiple valid partitions |
-| 34 | Matrix Multiply | 04 | `mat_mul_correct(A,B,C,n)` | ✅ 3/3 | ❌ 0/3 | Z3 can't prove uniqueness |
+| 31 | Topological Sort | 22 | `all_distinct ∧ is_topological_order` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — multiple valid orderings · [tests](agent/algorithms.py#L889) · [soundness](agent/algorithms.py#L899) · [completeness](agent/algorithms.py#L963) |
+| 32 | DFS Times | 22 | `d[u]<f[u] ∧ pred_edge_ok` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — timestamps depend on traversal order · [tests](agent/algorithms.py#L2581) · [soundness](agent/algorithms.py#L2591) · [completeness](agent/algorithms.py#L2625) |
+| 33 | Partition (Lomuto) | 07 | `between_bounds ∧ permutation ∧ pivot` | ✅ 3/3 | ❌ 0/3 | **Genuinely incomplete** — multiple valid partitions · [tests](agent/algorithms.py#L1621) · [soundness](agent/algorithms.py#L1631) · [completeness](agent/algorithms.py#L1669) |
+| 34 | Matrix Multiply | 04 | `mat_mul_correct(A,B,C,n)` | ✅ 3/3 | ❌ 0/3 | Z3 can't prove uniqueness · [tests](agent/algorithms.py#L1519) · [soundness](agent/algorithms.py#L1526) · [completeness](agent/algorithms.py#L1568) |
 
 **Faithful completeness: 30/34 pass.** The 4 failures are genuine (non-deterministic output or Z3 limitation).
 
@@ -100,26 +100,26 @@ These tests encode a **weaker property** than the actual AutoCLRS postcondition.
 Completeness failures may be artifacts of testing a weaker spec. See the
 [Spec Fidelity Audit Report](SPEC_AUDIT_REPORT.md) for details on each discrepancy.
 
-| # | Algorithm | Ch | AutoCLRS Spec | What We Test | Gap | Sound | Complete |
-|---|-----------|-----|--------------|-------------|-----|-------|----------|
-| 35 | Binary Search | 04 | `result==len` for not-found | `r < 0` for not-found | Different convention | ✅ 3/3 | ⚠️ 2/3 |
-| 36 | Max Subarray | 04 | Pure function `(sum,lo,hi)` | ∃ lo,hi. sum=max ∧ maximal | Effectively equivalent | ✅ 3/3 | ✅ 3/3 |
-| 37 | Quickselect | 09 | `result == select_spec(s0,k)` | Count-based kth smallest | Missing `select_spec` | ✅ 3/3 | ❌ 0/3 |
-| 38 | Rod Cutting | 15 | `result == optimal_revenue(prices,n)` | revenue ≥ each piece | Only lower bound | ✅ 3/3 | ❌ 0/3 |
-| 39 | BFS Distance | 22 | `reachable_in(adj,n,src,w,dist[w])` | Triangle inequality-like | Missing reachability | ✅ 3/3 | ❌ 0/3 |
-| 40 | Dijkstra | 24 | `dist[v] == sp_dist(w,n,src,v)` | Triangle inequality | **Much weaker** | ✅ 3/3 | ❌ 0/3 |
-| 41 | Bellman-Ford | 24 | `dist[v] ≤ sp_dist` ∧ triangle | Triangle inequality only | Missing `sp_dist` | ✅ 3/3 | ❌ 0/3 |
-| 42 | Floyd-Warshall | 25 | `contents == fw_outer(c,n,0)` | Triangle inequality | Missing DP equality | ✅ 3/3 | ❌ 0/3 |
-| 43 | DAG Shortest Paths | 24 | `sp_dist` equality | Triangle inequality | Same as Dijkstra | ✅ 3/3 | ❌ 0/3 |
-| 44 | BST Insert | 12 | `bst_subtree == bst_insert(ft,k)` | Sorted inorder ∧ contains | Missing functional spec | ✅ 3/3 | ❌ 0/3 |
-| 45 | BST Delete | 12 | `bst_subtree == bst_delete(ft,k)` | Sorted inorder ∧ removed | Missing functional spec | ✅ 3/3 | ❌ 0/3 |
-| 46 | Huffman Coding | 16 | `cost == greedy_cost ∧ wpl_optimal` | cost ≥ 0 | Only non-negative | ✅ 3/3 | ❌ 0/3 |
-| 47 | Kruskal MST | 23 | `result_is_forest_adj(edges)` | weight ≥ 0 | Missing forest property | ✅ 3/3 | ❌ 0/3 |
-| 48 | Prim MST | 23 | `prim_correct(key,parent,w,n,src)` | weight ≥ 0 | Missing MST correctness | ✅ 3/3 | ❌ 0/3 |
-| 49 | Graham Scan | 33 | `result == find_bottom_spec(xs,ys)` | hull_size bounds | Missing functional spec | ✅ 3/3 | ⚠️ 1/3 |
-| 50 | Edmonds-Karp | 26 | `valid_flow ∧ no_augmenting_path` | flow ≥ 0 | Missing max-flow property | ✅ 3/3 | ❌ 0/3 |
-| 51 | Vertex Cover | 35 | Not found in AutoCLRS | cover_size ≤ n | N/A | ✅ 3/3 | ❌ 0/3 |
-| 52 | Partial Select Sort | 09 | `sorted_prefix ∧ prefix_leq_suffix ∧ perm` | k elements sorted | Missing prefix_leq_suffix | ✅ 3/3 | ❌ 0/3 |
+| # | Algorithm | Ch | AutoCLRS Spec | What We Test | Gap | Sound | Complete | Source |
+|---|-----------|-----|--------------|-------------|-----|-------|----------|--------|
+| 35 | Binary Search | 04 | `result==len` for not-found | `r < 0` for not-found | Different convention | ✅ 3/3 | ⚠️ 2/3 | [tests](agent/algorithms.py#L207) · [soundness](agent/algorithms.py#L214) · [completeness](agent/algorithms.py#L250) |
+| 36 | Max Subarray | 04 | Pure function `(sum,lo,hi)` | ∃ lo,hi. sum=max ∧ maximal | Effectively equivalent | ✅ 3/3 | ✅ 3/3 | [tests](agent/algorithms.py#L307) · [soundness](agent/algorithms.py#L314) · [completeness](agent/algorithms.py#L365) |
+| 37 | Quickselect | 09 | `result == select_spec(s0,k)` | Count-based kth smallest | Missing `select_spec` | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L1403) · [soundness](agent/algorithms.py#L1410) · [completeness](agent/algorithms.py#L1433) |
+| 38 | Rod Cutting | 15 | `result == optimal_revenue(prices,n)` | revenue ≥ each piece | Only lower bound | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2081) · [soundness](agent/algorithms.py#L2088) · [completeness](agent/algorithms.py#L2120) |
+| 39 | BFS Distance | 22 | `reachable_in(adj,n,src,w,dist[w])` | Triangle inequality-like | Missing reachability | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2148) · [soundness](agent/algorithms.py#L2155) · [completeness](agent/algorithms.py#L2196) |
+| 40 | Dijkstra | 24 | `dist[v] == sp_dist(w,n,src,v)` | Triangle inequality | **Much weaker** | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2240) · [soundness](agent/algorithms.py#L2249) · [completeness](agent/algorithms.py#L2295) |
+| 41 | Bellman-Ford | 24 | `dist[v] ≤ sp_dist` ∧ triangle | Triangle inequality only | Missing `sp_dist` | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2328) · [soundness](agent/algorithms.py#L2335) · [completeness](agent/algorithms.py#L2376) |
+| 42 | Floyd-Warshall | 25 | `contents == fw_outer(c,n,0)` | Triangle inequality | Missing DP equality | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2407) · [soundness](agent/algorithms.py#L2415) · [completeness](agent/algorithms.py#L2460) |
+| 43 | DAG Shortest Paths | 24 | `sp_dist` equality | Triangle inequality | Same as Dijkstra | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2944) · [soundness](agent/algorithms.py#L2951) · [completeness](agent/algorithms.py#L2986) |
+| 44 | BST Insert | 12 | `bst_subtree == bst_insert(ft,k)` | Sorted inorder ∧ contains | Missing functional spec | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2652) · [soundness](agent/algorithms.py#L2664) · [completeness](agent/algorithms.py#L2700) |
+| 45 | BST Delete | 12 | `bst_subtree == bst_delete(ft,k)` | Sorted inorder ∧ removed | Missing functional spec | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2732) · [soundness](agent/algorithms.py#L2739) · [completeness](agent/algorithms.py#L2774) |
+| 46 | Huffman Coding | 16 | `cost == greedy_cost ∧ wpl_optimal` | cost ≥ 0 | Only non-negative | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L2887) · [soundness](agent/algorithms.py#L2894) · [completeness](agent/algorithms.py#L2916) |
+| 47 | Kruskal MST | 23 | `result_is_forest_adj(edges)` | weight ≥ 0 | Missing forest property | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L3024) · [soundness](agent/algorithms.py#L3031) · [completeness](agent/algorithms.py#L3048) |
+| 48 | Prim MST | 23 | `prim_correct(key,parent,w,n,src)` | weight ≥ 0 | Missing MST correctness | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L3070) · [soundness](agent/algorithms.py#L3077) · [completeness](agent/algorithms.py#L3094) |
+| 49 | Graham Scan | 33 | `result == find_bottom_spec(xs,ys)` | hull_size bounds | Missing functional spec | ✅ 3/3 | ⚠️ 1/3 | [tests](agent/algorithms.py#L3272) · [soundness](agent/algorithms.py#L3279) · [completeness](agent/algorithms.py#L3297) |
+| 50 | Edmonds-Karp | 26 | `valid_flow ∧ no_augmenting_path` | flow ≥ 0 | Missing max-flow property | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L3319) · [soundness](agent/algorithms.py#L3326) · [completeness](agent/algorithms.py#L3355) |
+| 51 | Vertex Cover | 35 | Not found in AutoCLRS | cover_size ≤ n | N/A | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L3377) · [soundness](agent/algorithms.py#L3384) · [completeness](agent/algorithms.py#L3401) |
+| 52 | Partial Select Sort | 09 | `sorted_prefix ∧ prefix_leq_suffix ∧ perm` | k elements sorted | Missing prefix_leq_suffix | ✅ 3/3 | ❌ 0/3 | [tests](agent/algorithms.py#L3423) · [soundness](agent/algorithms.py#L3430) · [completeness](agent/algorithms.py#L3458) |
 
 ## Reproducing Results
 
