@@ -101,6 +101,25 @@ for details on the verified CLRS algorithms.
 - **46/47 algorithms verified** — all soundness and completeness tests pass
 - **1 skipped** — RBTree has a pre-existing type error in the AutoCLRS `.fsti` file
 - **3 normalization-limited** — BSTArray, MatrixChain, UnionFind test only base/simple cases
+- **Verification log**: [`verification-log.txt`](verification-log.txt) — F* output from `make verify` across all 21 chapters (48 files)
+
+### Methodology Notes
+
+**Soundness vs Completeness count mismatch**: Many algorithms show more soundness checks than
+completeness checks (e.g., BST has 7 soundness but 2 completeness). This is because:
+
+- **Soundness** tests are per-property: each spec property (sorted, permutation, valid BST, etc.)
+  gets its own `assert_norm` or lemma for each test case
+- **Completeness** tests currently use `[@@expect_failure]` for most algorithms — these test that
+  the spec rejects wrong outputs, but only 1 test per algorithm
+
+Only **InsertionSort** and **GCD** use the correct [Appendix B](https://arxiv.org/abs/2406.09757)
+completeness methodology (`∀y. φ(input,y) ⟹ y == expected`), which gives matching counts
+(3 soundness / 3 completeness each). Additionally, **InsertionSort** has two weakened-spec tests
+(`Test.InsertionSort.WeakenedSorted.fst`, `Test.InsertionSort.WeakenedPerm.fst`) that demonstrate
+completeness failures when either the sorted or permutation property is dropped.
+
+Migrating remaining algorithms to Appendix B completeness is future work.
 
 ### Example: Sorting Soundness and Completeness
 
