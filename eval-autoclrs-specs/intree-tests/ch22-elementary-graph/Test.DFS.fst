@@ -4,44 +4,24 @@ open FStar.Mul
 open FStar.Seq
 open CLRS.Ch22.DFS.Spec
 
-(* === Soundness: initial state === *)
-let st0 = init_state 3
+(* Top-level function: dfs
+   Graph: 3 vertices, edges: 0→1, 0→2 (adjacency lists) *)
+let adj0 : seq int = seq_of_list [1; 2]
+let adj1 : seq int = Seq.empty #int
+let adj2 : seq int = Seq.empty #int
+let adj : seq (seq int) = seq_of_list [adj0; adj1; adj2]
 
-let test_init_time () : Lemma (st0.time == 0) = ()
-let test_init_n () : Lemma (st0.n == 3) = ()
+let result = dfs adj 3
 
-let test_init_colors () : Lemma (
-  Seq.index st0.color 0 == White /\
-  Seq.index st0.color 1 == White /\
-  Seq.index st0.color 2 == White
-) = ()
-
-(* === Soundness: discover vertex 0 === *)
-let st1 = discover_vertex 0 st0
-
-let test_discover_color () : Lemma (Seq.index st1.color 0 == Gray) =
-  assert_norm (Seq.index st1.color 0 == Gray)
-
-let test_discover_time () : Lemma (st1.time == 1) =
-  assert_norm (st1.time == 1)
-
-(* === Soundness: undiscovered vertex stays White === *)
-let test_other_unchanged () : Lemma (Seq.index st1.color 1 == White) =
-  assert_norm (Seq.index st1.color 1 == White)
-
-
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_init_time_complete (y:int) : Lemma
-  (requires st0.time == y)
-  (ensures y == 0) =
-  ()
-
-let test_init_n_complete (y:int) : Lemma
-  (requires st0.n == y)
+(* === Completeness (Appendix B): dfs uniquely determines output === *)
+#push-options "--z3rlimit 100"
+let test_n_complete (y:int) : Lemma
+  (requires result.n == y)
   (ensures y == 3) =
-  ()
+  assert_norm (result.n == 3)
 
-let test_discover_time_complete (y:int) : Lemma
-  (requires st1.time == y)
-  (ensures y == 1) =
-  assert_norm (st1.time == 1)
+let test_time_complete (y:int) : Lemma
+  (requires result.time == y)
+  (ensures y == 6) =
+  assert_norm (result.time == 6)
+#pop-options

@@ -3,21 +3,26 @@ module Test.KMP
 open FStar.Seq
 open CLRS.Ch32.KMP.Spec
 
-(* Test pattern: [1; 2; 1], text: [1; 2; 1; 2; 1] *)
+(* Top-level function: count_matches_spec
+   text = [1; 2; 1; 2; 1], pattern = [1; 2; 1]
+   Pattern matches at positions 0 and 2 → count = 2 *)
 let text : seq int = seq_of_list [1; 2; 1; 2; 1]
 let pattern : seq int = seq_of_list [1; 2; 1]
+let short_text : seq int = seq_of_list [1; 2]
+let pat1 : seq int = seq_of_list [1]
 
-(* === Soundness: matched_prefix_at — 3 characters match at position 3 === *)
-(* text[0..2] = [1; 2; 1] matches pattern[0..2] = [1; 2; 1] *)
-let test_match_sound () : Lemma (matched_prefix_at text pattern 3 3) = ()
+(* === Completeness (Appendix B): count_matches_spec uniquely determines output === *)
+let test_count_complete (y:nat) : Lemma
+  (requires count_matches_spec text pattern 5 3 == y)
+  (ensures y == 2) =
+  assert_norm (count_matches_spec text pattern 5 3 == 2)
 
-(* === Soundness: matched_prefix_at — partial match of 1 character at position 1 === *)
-let test_partial_match () : Lemma (matched_prefix_at text pattern 1 1) = ()
+let test_no_match_complete (y:nat) : Lemma
+  (requires count_matches_spec short_text pattern 2 3 == y)
+  (ensures y == 0) =
+  assert_norm (count_matches_spec short_text pattern 2 3 == 0)
 
-(* === Soundness: matched_prefix_at — 0 characters always match === *)
-let test_zero_match () : Lemma (matched_prefix_at text pattern 0 0) = ()
-
-(* Completeness note: matched_prefix_at is a prop predicate checking whether
-   q characters match at position i. Multiple q values satisfy it (e.g., q=0
-   always holds), so the spec intentionally does not uniquely determine the
-   match length — the KMP failure function provides the maximality constraint. *)
+let test_single_pat_complete (y:nat) : Lemma
+  (requires count_matches_spec text pat1 5 1 == y)
+  (ensures y == 3) =
+  assert_norm (count_matches_spec text pat1 5 1 == 3)

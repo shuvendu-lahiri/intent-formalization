@@ -3,59 +3,29 @@ module Test.Huffman
 open FStar.List.Tot
 open CLRS.Ch16.Huffman.Spec
 
-(* === Soundness: freq_of on leaves and internal nodes === *)
-let l1 : htree = Leaf 0 5
-let l2 : htree = Leaf 1 9
+(* Top-level function: huffman_build
+   Builds optimal Huffman tree from frequency list *)
 
-let test_freq_leaf () : Lemma (freq_of l1 == 5) = ()
+let tree2 = huffman_build [5; 9]
+let tree3 = huffman_build [5; 9; 12]
 
-(* === Soundness: merge two leaves === *)
-let merged = merge l1 l2
-
-let test_merge_freq () : Lemma (freq_of merged == 14) =
-  assert_norm (freq_of merged == 14)
-
-(* === Soundness: weighted path length === *)
-(* WPL of single leaf at depth 0 = 0 *)
-let test_wpl_leaf () : Lemma (weighted_path_length l1 == 0) =
-  assert_norm (weighted_path_length l1 == 0)
-
-(* WPL of merged: 5*1 + 9*1 = 14 *)
-let test_wpl_merged () : Lemma (weighted_path_length merged == 14) =
-  assert_norm (weighted_path_length merged == 14)
-
-(* === Soundness: cost === *)
-(* cost of merged: freq_of l1 + freq_of l2 = 5 + 9 = 14 *)
-let test_cost_merged () : Lemma (cost merged == 14) =
-  assert_norm (cost merged == 14)
-
-(* === Soundness: WPL = cost theorem === *)
-let test_wpl_cost () : Lemma (weighted_path_length merged == cost merged) =
-  wpl_equals_cost merged
-
-
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_freq_leaf_complete (y:int) : Lemma
-  (requires freq_of l1 == y)
-  (ensures y == 5) =
-  ()
-
-let test_merge_freq_complete (y:int) : Lemma
-  (requires freq_of merged == y)
+(* === Completeness (Appendix B): huffman_build uniquely determines output === *)
+let test_freq_2_complete (y:int) : Lemma
+  (requires freq_of tree2 == y)
   (ensures y == 14) =
-  assert_norm (freq_of merged == 14)
+  assert_norm (freq_of tree2 == 14)
 
-let test_wpl_leaf_complete (y:int) : Lemma
-  (requires weighted_path_length l1 == y)
-  (ensures y == 0) =
-  assert_norm (weighted_path_length l1 == 0)
-
-let test_wpl_merged_complete (y:int) : Lemma
-  (requires weighted_path_length merged == y)
+let test_cost_2_complete (y:int) : Lemma
+  (requires cost tree2 == y)
   (ensures y == 14) =
-  assert_norm (weighted_path_length merged == 14)
+  assert_norm (cost tree2 == 14)
 
-let test_cost_merged_complete (y:int) : Lemma
-  (requires cost merged == y)
-  (ensures y == 14) =
-  assert_norm (cost merged == 14)
+let test_freq_3_complete (y:int) : Lemma
+  (requires freq_of tree3 == y)
+  (ensures y == 26) =
+  assert_norm (freq_of tree3 == 26)
+
+let test_cost_3_complete (y:int) : Lemma
+  (requires cost tree3 == y)
+  (ensures y == 40) =
+  assert_norm (cost tree3 == 40)
