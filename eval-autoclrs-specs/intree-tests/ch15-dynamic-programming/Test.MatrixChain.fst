@@ -1,23 +1,46 @@
 module Test.MatrixChain
+#lang-pulse
 
-open FStar.Seq
-open FStar.Mul
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open FStar.SizeT
+open CLRS.Ch15.MatrixChain.Impl
 open CLRS.Ch15.MatrixChain.Spec
 
-(* Matrix chain: dims = [10; 20; 30] means 2 matrices: 10×20 and 20×30
-   Optimal cost: 10*20*30 = 6000 (only one way to multiply 2 matrices)
-*)
+module A = Pulse.Lib.Array
+module V = Pulse.Lib.Vec
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
 
-let dims : seq int = seq_of_list [10; 20; 30]
-let init_table : seq int = seq_of_list [0; 0; 0; 0]
+let mc_test ()
+  : Lemma (mc_result (Seq.seq_of_list [10; 30; 5; 60]) 3 == 4500)
+  = assert_norm (mc_result (Seq.seq_of_list [10; 30; 5; 60]) 3 == 4500)
 
-(* === Soundness: mc_inner_k computes cost of single split === *)
-let test_inner_k_sound () : Lemma (mc_inner_k init_table dims 2 0 1 0 1000000000 == 6000) =
-  assert_norm (mc_inner_k init_table dims 2 0 1 0 1000000000 == 6000)
+```pulse
+fn test_matrix_chain_basic ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let dv = V.alloc 10 4sz;
+  V.to_array_pts_to dv;
+  let dims = V.vec_to_array dv;
+  rewrite (A.pts_to (V.vec_to_array dv) (Seq.create 4 10)) as (A.pts_to dims (Seq.create 4 10));
+  dims.(0sz) <- 10;
+  dims.(1sz) <- 30;
+  dims.(2sz) <- 5;
+  dims.(3sz) <- 60;
 
+  with s_dims. assert (A.pts_to dims s_dims);
 
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_inner_k_complete (y:int) : Lemma
-  (requires mc_inner_k init_table dims 2 0 1 0 1000000000 == y)
-  (ensures y == 6000) =
-  assert_norm (mc_inner_k init_table dims 2 0 1 0 1000000000 == 6000)
+  let result = matrix_chain_order dims 3sz;
+
+  mc_test ();
+  assert (pure (result == 4500));
+
+  with s1. assert (A.pts_to dims s1);
+  rewrite (A.pts_to dims s1) as (A.pts_to (V.vec_to_array dv) s1);
+  V.to_vec_pts_to dv;
+  V.free dv;
+}
+```

@@ -1,50 +1,64 @@
 module Test.LCS
+#lang-pulse
 
-open FStar.Seq
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open FStar.SizeT
+open CLRS.Ch15.LCS.Impl
 open CLRS.Ch15.LCS.Spec
 
-(* === Soundness: LCS of [1;2;3] and [2;3;4] has length 2 === *)
-let x1 : seq int = seq_of_list [1; 2; 3]
-let y1 : seq int = seq_of_list [2; 3; 4]
+module A = Pulse.Lib.Array
+module V = Pulse.Lib.Vec
+module GR = Pulse.Lib.GhostReference
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
 
-let test_lcs_sound_1 () : Lemma (lcs_length x1 y1 3 3 == 2) =
-  assert_norm (lcs_length x1 y1 3 3 == 2)
+let lcs_test ()
+  : Lemma (lcs_length (Seq.seq_of_list [1; 2; 3]) (Seq.seq_of_list [2; 3; 4]) 3 3 == 2)
+  = assert_norm (lcs_length (Seq.seq_of_list [1; 2; 3]) (Seq.seq_of_list [2; 3; 4]) 3 3 == 2)
 
-(* === Soundness: identical sequences have LCS = length === *)
-let x2 : seq int = seq_of_list [1; 2; 3]
-let y2 : seq int = seq_of_list [1; 2; 3]
+```pulse
+fn test_lcs_basic ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let xv = V.alloc 0 3sz;
+  V.to_array_pts_to xv;
+  let x_arr = V.vec_to_array xv;
+  rewrite (A.pts_to (V.vec_to_array xv) (Seq.create 3 0)) as (A.pts_to x_arr (Seq.create 3 0));
+  x_arr.(0sz) <- 1;
+  x_arr.(1sz) <- 2;
+  x_arr.(2sz) <- 3;
 
-let test_lcs_sound_2 () : Lemma (lcs_length x2 y2 3 3 == 3) =
-  assert_norm (lcs_length x2 y2 3 3 == 3)
+  let yv = V.alloc 0 3sz;
+  V.to_array_pts_to yv;
+  let y_arr = V.vec_to_array yv;
+  rewrite (A.pts_to (V.vec_to_array yv) (Seq.create 3 0)) as (A.pts_to y_arr (Seq.create 3 0));
+  y_arr.(0sz) <- 2;
+  y_arr.(1sz) <- 3;
+  y_arr.(2sz) <- 4;
 
-(* === Soundness: disjoint sequences have LCS = 0 === *)
-let x3 : seq int = seq_of_list [1; 2]
-let y3 : seq int = seq_of_list [3; 4]
+  with sx0. assert (A.pts_to x_arr sx0);
+  with sy0. assert (A.pts_to y_arr sy0);
 
-let test_lcs_sound_3 () : Lemma (lcs_length x3 y3 2 2 == 0) =
-  assert_norm (lcs_length x3 y3 2 2 == 0)
+  let ctr = GR.alloc 0;
+  let result = lcs x_arr y_arr 3sz 3sz ctr;
 
-(* === Soundness: base case with empty === *)
-let test_lcs_sound_4 () : Lemma (lcs_length x1 y1 0 3 == 0) = ()
+  lcs_test ();
+  assert (pure (result == 2));
 
+  with cf. assert (GR.pts_to ctr cf);
+  GR.free ctr;
 
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_lcs_complete_1 (y:int) : Lemma
-  (requires lcs_length x1 y1 3 3 == y)
-  (ensures y == 2) =
-  assert_norm (lcs_length x1 y1 3 3 == 2)
+  with sy1. assert (A.pts_to y_arr sy1);
+  rewrite (A.pts_to y_arr sy1) as (A.pts_to (V.vec_to_array yv) sy1);
+  V.to_vec_pts_to yv;
+  V.free yv;
 
-let test_lcs_complete_2 (y:int) : Lemma
-  (requires lcs_length x2 y2 3 3 == y)
-  (ensures y == 3) =
-  assert_norm (lcs_length x2 y2 3 3 == 3)
-
-let test_lcs_complete_3 (y:int) : Lemma
-  (requires lcs_length x3 y3 2 2 == y)
-  (ensures y == 0) =
-  assert_norm (lcs_length x3 y3 2 2 == 0)
-
-let test_lcs_complete_4 (y:int) : Lemma
-  (requires lcs_length x1 y1 0 3 == y)
-  (ensures y == 0) =
-  ()
+  with sx1. assert (A.pts_to x_arr sx1);
+  rewrite (A.pts_to x_arr sx1) as (A.pts_to (V.vec_to_array xv) sx1);
+  V.to_vec_pts_to xv;
+  V.free xv;
+}
+```

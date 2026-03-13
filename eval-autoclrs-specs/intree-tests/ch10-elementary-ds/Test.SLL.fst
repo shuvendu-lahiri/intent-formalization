@@ -1,45 +1,33 @@
 module Test.SLL
+#lang-pulse
 
-open FStar.List.Tot
-open CLRS.Ch10.SinglyLinkedList.Spec
+open Pulse.Lib.Pervasives
+open CLRS.Ch10.SinglyLinkedList.Base
+open CLRS.Ch10.SinglyLinkedList.Impl
 
-(* === Soundness: insert_head and search === *)
-let l0 : list int = []
-let l1 : list int = list_insert_head l0 3
-let l2 : list int = list_insert_head l1 2
-let l3 : list int = list_insert_head l2 1
+```pulse
+fn test_sll_basic ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let hd : dlist = None;
+  intro_is_dlist_nil hd;
 
-let test_insert_sound () : Lemma (l3 == [1; 2; 3]) =
-  assert_norm (l3 == [1; 2; 3])
+  let hd = list_insert 3 hd;
+  let hd = list_insert 2 hd;
+  let hd = list_insert 1 hd;
 
-let test_search_found () : Lemma (list_search l3 2 == true) =
-  assert_norm (list_search l3 2 == true)
+  let found = list_search hd 2;
+  assert (pure (found == true));
 
-let test_search_not_found () : Lemma (list_search l3 4 == false) =
-  assert_norm (list_search l3 4 == false)
+  let hd = list_delete hd 2;
 
-(* === Soundness: delete === *)
-let test_delete_sound () : Lemma (list_delete l3 2 == [1; 3]) =
-  assert_norm (list_delete l3 2 == [1; 3])
+  let missing = list_search hd 2;
+  assert (pure (missing == false));
 
-
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_insert_complete (y:(list int)) : Lemma
-  (requires l3 == y)
-  (ensures y == [1; 2; 3]) =
-  assert_norm (l3 == [1; 2; 3])
-
-let test_search_found_complete (y:bool) : Lemma
-  (requires list_search l3 2 == y)
-  (ensures y == true) =
-  assert_norm (list_search l3 2 == true)
-
-let test_search_not_found_complete (y:bool) : Lemma
-  (requires list_search l3 4 == y)
-  (ensures y == false) =
-  assert_norm (list_search l3 4 == false)
-
-let test_delete_complete (y:(list int)) : Lemma
-  (requires list_delete l3 2 == y)
-  (ensures y == [1; 3]) =
-  assert_norm (list_delete l3 2 == [1; 3])
+  let hd = list_delete hd 1;
+  let hd = list_delete hd 3;
+  elim_is_dlist_nil hd;
+}
+```

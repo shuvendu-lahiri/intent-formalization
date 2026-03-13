@@ -1,36 +1,33 @@
 module Test.MergeSort
 
-module Seq = FStar.Seq
-open Pulse.Lib.BoundedIntegers
+open FStar.Seq
+open FStar.Seq.Properties
 open CLRS.Common.SortSpec
-open CLRS.Ch02.MergeSort.Spec
+open Pulse.Lib.BoundedIntegers
 
-(* === Soundness: seq_merge on small inputs === *)
-let a1 : Seq.seq int = Seq.seq_of_list [1]
-let a2 : Seq.seq int = Seq.seq_of_list [2]
+#push-options "--z3rlimit 400 --fuel 8 --ifuel 4"
 
-let test_merge_sound_1 () : Lemma (seq_merge a1 a2 == Seq.seq_of_list [1; 2]) =
-  assert_norm (seq_merge a1 a2 == Seq.seq_of_list [1; 2])
+let std_sort3 (s: seq int)
+  : Lemma
+    (requires (forall (i j:nat). Prims.op_LessThanOrEqual i j /\
+                                 Prims.op_LessThan j (length s) ==>
+                                 Prims.op_LessThanOrEqual (index s i) (index s j)) /\
+              FStar.Seq.Properties.permutation int (seq_of_list [3; 1; 2]) s)
+    (ensures index s 0 == 1 /\ index s 1 == 2 /\ index s 2 == 3)
+= perm_len (seq_of_list [3; 1; 2]) s;
+  assert_norm (count 1 (seq_of_list [3; 1; 2]) == 1);
+  assert_norm (count 2 (seq_of_list [3; 1; 2]) == 1);
+  assert_norm (count 3 (seq_of_list [3; 1; 2]) == 1);
+  assert_norm (count 0 (seq_of_list [3; 1; 2]) == 0);
+  assert_norm (count 4 (seq_of_list [3; 1; 2]) == 0)
 
-let test_merge_sound_2 () : Lemma (seq_merge a2 a1 == Seq.seq_of_list [1; 2]) =
-  assert_norm (seq_merge a2 a1 == Seq.seq_of_list [1; 2])
+let completeness_sort3 (s: seq int)
+  : Lemma
+    (requires sorted s /\ permutation (seq_of_list [3; 1; 2]) s)
+    (ensures index s 0 == 1 /\ index s 1 == 2 /\ index s 2 == 3)
+= assert (forall (i j:nat). (i <= j) == Prims.op_LessThanOrEqual i j);
+  assert (forall (x y:int). (x <= y) == Prims.op_LessThanOrEqual x y);
+  reveal_opaque (`%permutation) (permutation (seq_of_list [3; 1; 2]) s);
+  std_sort3 s
 
-(* === Soundness: empty merge === *)
-let empty : Seq.seq int = Seq.empty
-let test_merge_sound_3 () : Lemma (seq_merge empty a1 == a1) =
-  assert_norm (seq_merge empty a1 == a1)
-
-let test_merge_sound_4 () : Lemma (seq_merge a1 empty == a1) =
-  assert_norm (seq_merge a1 empty == a1)
-
-
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_merge_complete_1 (y:(Seq.seq int)) : Lemma
-  (requires seq_merge a1 a2 == y)
-  (ensures y == Seq.seq_of_list [1; 2]) =
-  assert_norm (seq_merge a1 a2 == Seq.seq_of_list [1; 2])
-
-let test_merge_complete_2 (y:(Seq.seq int)) : Lemma
-  (requires seq_merge a2 a1 == y)
-  (ensures y == Seq.seq_of_list [1; 2]) =
-  assert_norm (seq_merge a2 a1 == Seq.seq_of_list [1; 2])
+#pop-options

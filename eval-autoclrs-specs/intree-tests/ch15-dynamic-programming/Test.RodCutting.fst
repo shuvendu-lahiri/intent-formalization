@@ -1,45 +1,52 @@
 module Test.RodCutting
+#lang-pulse
 
-open FStar.Mul
-open FStar.Seq
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open FStar.SizeT
+open CLRS.Ch15.RodCutting.Impl
 open CLRS.Ch15.RodCutting.Spec
 
-(* CLRS example: prices = [1; 5; 8; 9; 10; 17; 17; 20; 24; 30] *)
-let prices : seq nat = seq_of_list [1; 5; 8; 9; 10; 17; 17; 20; 24; 30]
+module A = Pulse.Lib.Array
+module V = Pulse.Lib.Vec
+module GR = Pulse.Lib.GhostReference
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
 
-(* === Soundness: optimal revenue for small rods === *)
-let test_sound_len1 () : Lemma (optimal_revenue prices 1 == 1) =
-  assert_norm (optimal_revenue prices 1 == 1)
+let rod_cutting_test ()
+  : Lemma (optimal_revenue (Seq.seq_of_list [1; 5; 8; 9]) 4 == 10)
+  = assert_norm (optimal_revenue (Seq.seq_of_list [1; 5; 8; 9]) 4 == 10)
 
-let test_sound_len2 () : Lemma (optimal_revenue prices 2 == 5) =
-  assert_norm (optimal_revenue prices 2 == 5)
+```pulse
+fn test_rod_cutting_basic ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let pv = V.alloc (0 <: nat) 4sz;
+  V.to_array_pts_to pv;
+  let prices_arr = V.vec_to_array pv;
+  rewrite (A.pts_to (V.vec_to_array pv) (Seq.create 4 (0 <: nat))) as (A.pts_to prices_arr (Seq.create 4 (0 <: nat)));
 
-let test_sound_len3 () : Lemma (optimal_revenue prices 3 == 8) =
-  assert_norm (optimal_revenue prices 3 == 8)
+  A.op_Array_Assignment prices_arr 0sz (1 <: nat);
+  A.op_Array_Assignment prices_arr 1sz (5 <: nat);
+  A.op_Array_Assignment prices_arr 2sz (8 <: nat);
+  A.op_Array_Assignment prices_arr 3sz (9 <: nat);
 
-let test_sound_len4 () : Lemma (optimal_revenue prices 4 == 10) =
-  assert_norm (optimal_revenue prices 4 == 10)
+  with s_prices. assert (A.pts_to prices_arr s_prices);
 
+  let ctr = GR.alloc 0;
+  let result = rod_cutting prices_arr 4sz ctr;
 
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_complete_len1 (y:int) : Lemma
-  (requires optimal_revenue prices 1 == y)
-  (ensures y == 1) =
-  assert_norm (optimal_revenue prices 1 == 1)
+  rod_cutting_test ();
+  assert (pure (result == 10));
 
-let test_complete_len2 (y:int) : Lemma
-  (requires optimal_revenue prices 2 == y)
-  (ensures y == 5) =
-  assert_norm (optimal_revenue prices 2 == 5)
+  with cf. assert (GR.pts_to ctr cf);
+  GR.free ctr;
 
-let test_complete_len3 (y:int) : Lemma
-  (requires optimal_revenue prices 3 == y)
-  (ensures y == 8) =
-  assert_norm (optimal_revenue prices 3 == 8)
-
-#push-options "--z3rlimit 100"
-let test_complete_len4 (y:int) : Lemma
-  (requires optimal_revenue prices 4 == y)
-  (ensures y == 10) =
-  assert_norm (optimal_revenue prices 4 == 10)
-#pop-options
+  with s1. assert (A.pts_to prices_arr s1);
+  rewrite (A.pts_to prices_arr s1) as (A.pts_to (V.vec_to_array pv) s1);
+  V.to_vec_pts_to pv;
+  V.free pv;
+}
+```

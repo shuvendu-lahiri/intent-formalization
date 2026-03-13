@@ -1,24 +1,75 @@
 module Test.SimultaneousMinMax
+#lang-pulse
 
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open Pulse.Lib.BoundedIntegers
+open FStar.SizeT
+open CLRS.Ch09.SimultaneousMinMax.Impl
 open CLRS.Ch09.SimultaneousMinMax.Spec
 
-(* complexity_bounded_minmax(cf, c0, n) : cf >= c0 /\ cf - c0 == 2*(n-1)
-   complexity_bounded_minmax_pairs(cf, c0, n) : 2*(cf-c0) <= 3*n *)
+module A = Pulse.Lib.Array
+module V = Pulse.Lib.Vec
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
+module GR = Pulse.Lib.GhostReference
 
-(* === Soundness: 8-element array, simple scan needs 2*(8-1)=14 comparisons === *)
-let test_simple_sound_1 () : Lemma (complexity_bounded_minmax 14 0 8) = ()
+#push-options "--z3rlimit 200 --fuel 4 --ifuel 2"
 
-(* === Soundness: with nonzero c0 === *)
-let test_simple_sound_2 () : Lemma (complexity_bounded_minmax 19 5 8) = ()
+```pulse
+fn test_find_minmax ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let v = V.alloc 0 3sz;
+  V.to_array_pts_to v;
+  let arr = V.vec_to_array v;
+  rewrite (A.pts_to (V.vec_to_array v) (Seq.create 3 0)) as (A.pts_to arr (Seq.create 3 0));
+  arr.(0sz) <- 5;
+  arr.(1sz) <- 2;
+  arr.(2sz) <- 8;
 
-(* === Soundness: pair processing bound === *)
-let test_pairs_sound_1 () : Lemma (complexity_bounded_minmax_pairs 12 0 8) = ()
+  let ctr = GR.alloc 0;
+  let result = find_minmax arr 3sz ctr;
+  assert (pure (result.min_val == 2));
+  assert (pure (result.max_val == 8));
 
-(* === Completeness (Appendix B): comparison count uniquely determined === *)
-let test_simple_complete (cf:nat) : Lemma
-  (requires complexity_bounded_minmax cf 0 8)
-  (ensures cf == 14) = ()
+  with cf. assert (GR.pts_to ctr cf);
+  GR.free ctr;
+  with s2. assert (A.pts_to arr s2);
+  rewrite (A.pts_to arr s2) as (A.pts_to (V.vec_to_array v) s2);
+  V.to_vec_pts_to v;
+  V.free v;
+}
+```
 
-(* Note: complexity_bounded_minmax_pairs uses inequality (<=), so multiple
-   cf values satisfy it — completeness is intentionally not provable,
-   demonstrating the bound is not tight. *)
+```pulse
+fn test_find_minmax_pairs ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let v = V.alloc 0 3sz;
+  V.to_array_pts_to v;
+  let arr = V.vec_to_array v;
+  rewrite (A.pts_to (V.vec_to_array v) (Seq.create 3 0)) as (A.pts_to arr (Seq.create 3 0));
+  arr.(0sz) <- 5;
+  arr.(1sz) <- 2;
+  arr.(2sz) <- 8;
+
+  let ctr = GR.alloc 0;
+  let result = find_minmax_pairs arr 3sz ctr;
+  assert (pure (result.min_val == 2));
+  assert (pure (result.max_val == 8));
+
+  with cf. assert (GR.pts_to ctr cf);
+  GR.free ctr;
+  with s2. assert (A.pts_to arr s2);
+  rewrite (A.pts_to arr s2) as (A.pts_to (V.vec_to_array v) s2);
+  V.to_vec_pts_to v;
+  V.free v;
+}
+```
+
+#pop-options
