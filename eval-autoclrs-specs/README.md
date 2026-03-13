@@ -42,6 +42,12 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 
 ### Example: Quicksort Completeness Test
 
+The `quicksort` implementation has the postcondition:
+```
+ensures exists* s. (A.pts_to a s ** pure (sorted s /\ permutation s0 s))
+```
+i.e., the output is **sorted** and a **permutation** of the input.
+
 ```pulse
 module Test.Quicksort
 #lang-pulse
@@ -55,29 +61,49 @@ fn test_quicksort_3 ()
   requires emp
   ensures emp
 {
-  // Input: [3; 1; 2]
+  // --- Setup input array [3; 1; 2] ---
   let v = V.alloc 0 3sz;
   V.to_array_pts_to v;
   let arr = V.vec_to_array v;
   rewrite ... as (A.pts_to arr (Seq.create 3 0));
   arr.(0sz) <- 3; arr.(1sz) <- 1; arr.(2sz) <- 2;
+  // arr now holds s0 = [3; 1; 2]
 
-  // y = quicksort(x)
+  // --- Call implementation ---
   quicksort arr 3sz;
+  // Postcondition gives us: sorted s /\ permutation [3;1;2] s
 
-  // assert(y == expected)
+  // --- Assert output == expected ---
   with s. assert (A.pts_to arr s);
+  // s is the output sequence; we assert it equals [1; 2; 3]
   assert (pure (s `Seq.equal` Seq.seq_of_list [1; 2; 3]));
+  // F* must prove [1;2;3] is the ONLY sequence satisfying
+  //   sorted s /\ permutation [3;1;2] s
+  // This succeeds iff the spec is COMPLETE
 
-  // cleanup
+  // --- Cleanup ---
   ...
 }
 ```
 
 The test imports `CLRS.Ch07.Quicksort.Impl` and calls `quicksort` on `[3, 1, 2]`.
-It then asserts the result is `[1, 2, 3]`. If the postcondition (sorted + permutation)
-is strong enough, F* can prove `s == [1; 2; 3]` — demonstrating completeness.
-No spec functions are referenced in the test.
+It then asserts the result is `[1, 2, 3]`. If the postcondition (`sorted ∧ permutation`)
+is strong enough to uniquely determine the output, F* can prove `s == [1; 2; 3]` —
+demonstrating completeness. No spec functions are referenced in the test.
+
+### Verification
+
+Tests are verified using the AutoCLRS build system (`make verify`), which invokes
+F* with the Pulse plugin for `#lang-pulse` files.
+
+```bash
+# From the autoclrs/autoclrs/ch07-quicksort/ directory:
+make verify
+```
+
+This requires a working F* + Pulse build (see [setup.sh](autoclrs/setup.sh) in the submodule).
+
+**Current status:** Pending — requires Pulse plugin build.
 
 ## References
 
