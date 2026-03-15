@@ -32,11 +32,30 @@ let std_sort3_nat (s: Seq.seq nat)
   assert_norm (SP.count #nat 0 (Seq.seq_of_list [3; 1; 2]) == 0);
   assert_norm (SP.count #nat 4 (Seq.seq_of_list [3; 1; 2]) == 0)
 
-let completeness_csort3 (s: Seq.seq nat)
+let input_is_sort3 (s0: Seq.seq nat) : Lemma
+  (requires
+    Seq.length s0 == 3 /\
+    Seq.index s0 0 == 3 /\
+    Seq.index s0 1 == 1 /\
+    Seq.index s0 2 == 2)
+  (ensures Seq.equal s0 (Seq.seq_of_list [3; 1; 2]))
+= assert_norm (Seq.length (Seq.seq_of_list [3; 1; 2]) == 3);
+  assert (forall (i:nat). i < Seq.length s0 ==> Seq.index s0 i == Seq.index (Seq.seq_of_list [3; 1; 2]) i);
+  Seq.lemma_eq_intro s0 (Seq.seq_of_list [3; 1; 2])
+
+let completeness_csort3 (s0 s: Seq.seq nat)
   : Lemma
-    (requires S.sorted s /\ S.permutation s (Seq.seq_of_list [3; 1; 2]))
+    (requires Seq.length s0 == 3 /\
+              Seq.index s0 0 == 3 /\
+              Seq.index s0 1 == 1 /\
+              Seq.index s0 2 == 2 /\
+              Seq.length s == 3 /\
+              S.sorted s /\
+              S.permutation s0 s)
     (ensures Seq.index s 0 == 1 /\ Seq.index s 1 == 2 /\ Seq.index s 2 == 3)
-= reveal_opaque (`%S.permutation) (S.permutation s (Seq.seq_of_list [3; 1; 2]));
+= input_is_sort3 s0;
+  Seq.lemma_eq_elim s0 (Seq.seq_of_list [3; 1; 2]);
+  reveal_opaque (`%S.permutation) (S.permutation s0 s);
   assert (forall (i j:nat). (i <= j) == Prims.op_LessThanOrEqual i j);
   assert (forall (x y:nat). (x <= y) == Prims.op_LessThanOrEqual x y);
   std_sort3_nat s
@@ -56,10 +75,17 @@ fn test_counting_sort_3 ()
   arr.(2sz) <- 2;
 
   with s0. assert (A.pts_to arr s0);
+  A.pts_to_len arr;
+  assert (pure (A.length arr == SZ.v 3sz));
+  assert (pure (Seq.length s0 == 3));
+
   counting_sort_inplace arr 3sz 4sz;
 
   with s. assert (A.pts_to arr s);
-  completeness_csort3 s;
+  A.pts_to_len arr;
+  assert (pure (A.length arr == SZ.v 3sz));
+  assert (pure (Seq.length s == 3));
+  completeness_csort3 s0 s;
 
   let v0 = arr.(0sz);
   let v1 = arr.(1sz);

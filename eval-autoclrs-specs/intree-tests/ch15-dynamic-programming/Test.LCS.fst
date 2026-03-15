@@ -4,6 +4,7 @@ module Test.LCS
 open Pulse.Lib.Pervasives
 open Pulse.Lib.Array
 open FStar.SizeT
+open FStar.Mul
 open CLRS.Ch15.LCS.Impl
 open CLRS.Ch15.LCS.Spec
 
@@ -17,6 +18,13 @@ let lcs_test ()
   : Lemma (lcs_length (Seq.seq_of_list [1; 2; 3]) (Seq.seq_of_list [2; 3; 4]) 3 3 == 2)
   = assert_norm (lcs_length (Seq.seq_of_list [1; 2; 3]) (Seq.seq_of_list [2; 3; 4]) 3 3 == 2)
 
+let lcs_3sz_pre ()
+  : Lemma
+    (ensures SZ.v 3sz > 0 /\
+             SZ.fits (op_Multiply (SZ.v 3sz + 1) (SZ.v 3sz + 1)))
+  = assert_norm (SZ.v 3sz > 0 /\
+                 SZ.fits (op_Multiply (SZ.v 3sz + 1) (SZ.v 3sz + 1)))
+
 ```pulse
 fn test_lcs_basic ()
   requires emp
@@ -27,6 +35,8 @@ fn test_lcs_basic ()
   V.to_array_pts_to xv;
   let x_arr = V.vec_to_array xv;
   rewrite (A.pts_to (V.vec_to_array xv) (Seq.create 3 0)) as (A.pts_to x_arr (Seq.create 3 0));
+  A.pts_to_len x_arr;
+  assert (pure (A.length x_arr == SZ.v 3sz));
   x_arr.(0sz) <- 1;
   x_arr.(1sz) <- 2;
   x_arr.(2sz) <- 3;
@@ -35,14 +45,15 @@ fn test_lcs_basic ()
   V.to_array_pts_to yv;
   let y_arr = V.vec_to_array yv;
   rewrite (A.pts_to (V.vec_to_array yv) (Seq.create 3 0)) as (A.pts_to y_arr (Seq.create 3 0));
+  A.pts_to_len y_arr;
+  assert (pure (A.length y_arr == SZ.v 3sz));
   y_arr.(0sz) <- 2;
   y_arr.(1sz) <- 3;
   y_arr.(2sz) <- 4;
 
-  with sx0. assert (A.pts_to x_arr sx0);
-  with sy0. assert (A.pts_to y_arr sy0);
+  lcs_3sz_pre ();
 
-  let ctr = GR.alloc 0;
+  let ctr = GR.alloc #nat 0;
   let result = lcs x_arr y_arr 3sz 3sz ctr;
 
   lcs_test ();

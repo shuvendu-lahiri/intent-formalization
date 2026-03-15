@@ -16,9 +16,13 @@ module V = Pulse.Lib.Vec
 (* Completeness lemma — proof obligation *)
 #push-options "--fuel 8 --ifuel 4 --z3rlimit 400"
 let completeness_find_bottom (result: SZ.t) (sxs sys: Seq.seq int) : Lemma
-  (requires SZ.v result == find_bottom_spec sxs sys)
+  (requires Seq.length sxs == 3 /\
+            Seq.length sys == 3 /\
+            Seq.index sxs 0 == 0 /\ Seq.index sxs 1 == 1 /\ Seq.index sxs 2 == 2 /\
+            Seq.index sys 0 == 2 /\ Seq.index sys 1 == 0 /\ Seq.index sys 2 == 1 /\
+            SZ.v result == find_bottom_spec sxs sys)
   (ensures SZ.v result == 1)
-= admit()
+= assert_norm (SZ.v result == 1)
 #pop-options
 
 ```pulse

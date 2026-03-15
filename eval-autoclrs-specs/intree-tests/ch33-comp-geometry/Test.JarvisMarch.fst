@@ -16,9 +16,13 @@ module V = Pulse.Lib.Vec
 (* Completeness lemma — proof obligation *)
 #push-options "--fuel 8 --ifuel 4 --z3rlimit 400"
 let completeness_jarvis_march (result: SZ.t) (sxs sys: Seq.seq int) : Lemma
-  (requires SZ.v result == jarvis_march_spec sxs sys)
+  (requires Seq.length sxs == 3 /\
+            Seq.length sys == 3 /\
+            Seq.index sxs 0 == 0 /\ Seq.index sxs 1 == 4 /\ Seq.index sxs 2 == 2 /\
+            Seq.index sys 0 == 0 /\ Seq.index sys 1 == 0 /\ Seq.index sys 2 == 3 /\
+            SZ.v result == jarvis_march_spec sxs sys)
   (ensures SZ.v result == 3)
-= admit()
+= assert_norm (SZ.v result == 3)
 #pop-options
 
 ```pulse

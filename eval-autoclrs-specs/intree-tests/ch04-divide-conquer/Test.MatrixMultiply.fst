@@ -4,6 +4,7 @@ module Test.MatrixMultiply
 open Pulse.Lib.Pervasives
 open Pulse.Lib.Array
 open FStar.SizeT
+open FStar.Mul
 open CLRS.Ch04.MatrixMultiply.Impl
 open CLRS.Ch04.MatrixMultiply.Spec
 
@@ -39,6 +40,15 @@ let mm11 ()
   : Lemma (dot_product_spec (Seq.seq_of_list [1; 2; 3; 4]) (Seq.seq_of_list [5; 6; 7; 8]) 2 1 1 2 == 50)
   = assert_norm (dot_product_spec (Seq.seq_of_list [1; 2; 3; 4]) (Seq.seq_of_list [5; 6; 7; 8]) 2 1 1 2 == 50)
 
+let mm_2sz_pre ()
+  : Lemma
+    (ensures SZ.v 2sz > 0 /\
+             SZ.v 4sz == op_Multiply (SZ.v 2sz) (SZ.v 2sz) /\
+             SZ.fits (op_Multiply (SZ.v 2sz) (SZ.v 2sz)))
+  = assert_norm (SZ.v 2sz > 0 /\
+                 SZ.v 4sz == op_Multiply (SZ.v 2sz) (SZ.v 2sz) /\
+                 SZ.fits (op_Multiply (SZ.v 2sz) (SZ.v 2sz)))
+
 ```pulse
 fn test_matrix_multiply_2x2 ()
   requires emp
@@ -49,6 +59,8 @@ fn test_matrix_multiply_2x2 ()
   V.to_array_pts_to av;
   let a_arr = V.vec_to_array av;
   rewrite (A.pts_to (V.vec_to_array av) (Seq.create 4 0)) as (A.pts_to a_arr (Seq.create 4 0));
+  A.pts_to_len a_arr;
+  assert (pure (A.length a_arr == SZ.v 4sz));
   a_arr.(0sz) <- 1;
   a_arr.(1sz) <- 2;
   a_arr.(2sz) <- 3;
@@ -58,6 +70,8 @@ fn test_matrix_multiply_2x2 ()
   V.to_array_pts_to bv;
   let b_arr = V.vec_to_array bv;
   rewrite (A.pts_to (V.vec_to_array bv) (Seq.create 4 0)) as (A.pts_to b_arr (Seq.create 4 0));
+  A.pts_to_len b_arr;
+  assert (pure (A.length b_arr == SZ.v 4sz));
   b_arr.(0sz) <- 5;
   b_arr.(1sz) <- 6;
   b_arr.(2sz) <- 7;
@@ -67,11 +81,24 @@ fn test_matrix_multiply_2x2 ()
   V.to_array_pts_to cv;
   let c_arr = V.vec_to_array cv;
   rewrite (A.pts_to (V.vec_to_array cv) (Seq.create 4 0)) as (A.pts_to c_arr (Seq.create 4 0));
+  A.pts_to_len c_arr;
+  assert (pure (A.length c_arr == SZ.v 4sz));
 
   with sa0. assert (A.pts_to a_arr sa0);
   with sb0. assert (A.pts_to b_arr sb0);
+  with sc0. assert (A.pts_to c_arr sc0);
+  A.pts_to_len a_arr;
+  A.pts_to_len b_arr;
+  A.pts_to_len c_arr;
+  assert (pure (A.length a_arr == SZ.v 4sz));
+  assert (pure (A.length b_arr == SZ.v 4sz));
+  assert (pure (A.length c_arr == SZ.v 4sz));
+  mm_2sz_pre ();
+  assert (pure (Seq.length sa0 == op_Multiply (SZ.v 2sz) (SZ.v 2sz)));
+  assert (pure (Seq.length sb0 == op_Multiply (SZ.v 2sz) (SZ.v 2sz)));
+  assert (pure (Seq.length sc0 == op_Multiply (SZ.v 2sz) (SZ.v 2sz)));
 
-  let ctr = GR.alloc 0;
+  let ctr = GR.alloc #nat 0;
   matrix_multiply a_arr b_arr c_arr 2sz ctr;
 
   with sc1. assert (A.pts_to c_arr sc1);

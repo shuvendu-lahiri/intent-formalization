@@ -11,7 +11,7 @@ module GR = Pulse.Lib.GhostReference
 let completeness_bst_search_1 (result: bool) : Lemma
   (requires result == bst_search (bst_insert (bst_insert (bst_insert Leaf 2) 1) 3) 1)
   (ensures result == true)
-= admit()
+= assert_norm (result == true)
 #pop-options
 
 fn test_bst ()

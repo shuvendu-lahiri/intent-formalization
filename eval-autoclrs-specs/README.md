@@ -39,8 +39,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 
 **48 tests total — 41 call Pulse implementation functions, 7 are pure spec tests (no Impl module exists)**
 
-All completeness lemmas currently use `admit()` as proof obligations.
-Proofs are being discharged incrementally — verified proofs are marked ✅.
+**39 completeness proofs discharged ✅, 9 remaining with admit().**
 
 ### Sorting (ch02, ch06, ch07, ch08)
 
@@ -50,49 +49,49 @@ Proofs are being discharged incrementally — verified proofs are marked ✅.
 | 2 | MergeSort | ch02 | `merge_sort` | [Test.MergeSort.fst](intree-tests/ch02-getting-started/Test.MergeSort.fst) | ✅ |
 | 3 | Heapsort | ch06 | `heapsort` | [Test.Heap.fst](intree-tests/ch06-heapsort/Test.Heap.fst) | ✅ |
 | 4 | Quicksort | ch07 | `quicksort` | [Test.Quicksort.fst](intree-tests/ch07-quicksort/Test.Quicksort.fst) | ✅ |
-| 5 | BucketSort | ch08 | *(spec only)* | [Test.BucketSort.fst](intree-tests/ch08-linear-sorting/Test.BucketSort.fst) | admit |
-| 6 | RadixSort | ch08 | *(spec only)* | [Test.RadixSort.fst](intree-tests/ch08-linear-sorting/Test.RadixSort.fst) | admit |
-| 7 | CountingSort | ch08 | `counting_sort_inplace` | [Test.CountingSort.fst](intree-tests/ch08-linear-sorting/Test.CountingSort.fst) | admit |
+| 5 | BucketSort | ch08 | *(spec only)* | [Test.BucketSort.fst](intree-tests/ch08-linear-sorting/Test.BucketSort.fst) | ✅ |
+| 6 | RadixSort | ch08 | *(spec only)* | [Test.RadixSort.fst](intree-tests/ch08-linear-sorting/Test.RadixSort.fst) | ✅ |
+| 7 | CountingSort | ch08 | `counting_sort_inplace` | [Test.CountingSort.fst](intree-tests/ch08-linear-sorting/Test.CountingSort.fst) | ✅ |
 
 ### Search & Selection (ch04, ch09)
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
 | 8 | BinarySearch | ch04 | `binary_search` | [Test.BinarySearch.fst](intree-tests/ch04-divide-conquer/Test.BinarySearch.fst) | ✅ |
-| 9 | MaxSubarray | ch04 | *(spec only)* | [Test.MaxSubarray.fst](intree-tests/ch04-divide-conquer/Test.MaxSubarray.fst) | admit |
-| 10 | MatrixMultiply | ch04 | `matrix_multiply` | [Test.MatrixMultiply.fst](intree-tests/ch04-divide-conquer/Test.MatrixMultiply.fst) | admit |
-| 11 | MinMax | ch09 | `find_minimum`, `find_maximum` | [Test.MinMax.fst](intree-tests/ch09-order-statistics/Test.MinMax.fst) | admit |
-| 12 | PartialSelectionSort | ch09 | `select` | [Test.PartialSelectionSort.fst](intree-tests/ch09-order-statistics/Test.PartialSelectionSort.fst) | admit |
-| 13 | Quickselect | ch09 | `quickselect` | [Test.Quickselect.fst](intree-tests/ch09-order-statistics/Test.Quickselect.fst) | admit |
-| 14 | SimultaneousMinMax | ch09 | `find_minmax`, `find_minmax_pairs` | [Test.SimultaneousMinMax.fst](intree-tests/ch09-order-statistics/Test.SimultaneousMinMax.fst) | admit |
+| 9 | MaxSubarray | ch04 | *(spec only)* | [Test.MaxSubarray.fst](intree-tests/ch04-divide-conquer/Test.MaxSubarray.fst) | ✅ |
+| 10 | MatrixMultiply | ch04 | `matrix_multiply` | [Test.MatrixMultiply.fst](intree-tests/ch04-divide-conquer/Test.MatrixMultiply.fst) | ✅ |
+| 11 | MinMax | ch09 | `find_minimum`, `find_maximum` | [Test.MinMax.fst](intree-tests/ch09-order-statistics/Test.MinMax.fst) | ✅ |
+| 12 | PartialSelectionSort | ch09 | `select` | [Test.PartialSelectionSort.fst](intree-tests/ch09-order-statistics/Test.PartialSelectionSort.fst) | ✅ |
+| 13 | Quickselect | ch09 | `quickselect` | [Test.Quickselect.fst](intree-tests/ch09-order-statistics/Test.Quickselect.fst) | ✅ |
+| 14 | SimultaneousMinMax | ch09 | `find_minmax`, `find_minmax_pairs` | [Test.SimultaneousMinMax.fst](intree-tests/ch09-order-statistics/Test.SimultaneousMinMax.fst) | ✅ |
 
 ### Data Structures (ch10, ch11, ch12, ch13)
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
-| 15 | Stack | ch10 | `push`, `pop` | [Test.Stack.fst](intree-tests/ch10-elementary-ds/Test.Stack.fst) | admit |
-| 16 | SLL | ch10 | `list_insert`, `list_search` | [Test.SLL.fst](intree-tests/ch10-elementary-ds/Test.SLL.fst) | admit |
-| 17 | DLL | ch10 | `list_insert`, `list_search` | [Test.DLL.fst](intree-tests/ch10-elementary-ds/Test.DLL.fst) | admit |
-| 18 | Queue | ch10 | `enqueue`, `dequeue` | [Test.Queue.fst](intree-tests/ch10-elementary-ds/Test.Queue.fst) | admit |
+| 15 | Stack | ch10 | `push`, `pop` | [Test.Stack.fst](intree-tests/ch10-elementary-ds/Test.Stack.fst) | ✅ |
+| 16 | SLL | ch10 | `list_insert`, `list_search` | [Test.SLL.fst](intree-tests/ch10-elementary-ds/Test.SLL.fst) | ✅ |
+| 17 | DLL | ch10 | `list_insert`, `list_search` | [Test.DLL.fst](intree-tests/ch10-elementary-ds/Test.DLL.fst) | ✅ |
+| 18 | Queue | ch10 | `enqueue`, `dequeue` | [Test.Queue.fst](intree-tests/ch10-elementary-ds/Test.Queue.fst) | ✅ |
 | 19 | HashTable | ch11 | `hash_insert`, `hash_search` | [Test.HashTable.fst](intree-tests/ch11-hash-tables/Test.HashTable.fst) | admit |
-| 20 | BST | ch12 | `tree_insert`, `tree_search` | [Test.BST.fst](intree-tests/ch12-bst/Test.BST.fst) | admit |
+| 20 | BST | ch12 | `tree_insert`, `tree_search` | [Test.BST.fst](intree-tests/ch12-bst/Test.BST.fst) | ✅ |
 | 21 | BSTArray | ch12 | `tree_search` | [Test.BSTArray.fst](intree-tests/ch12-bst/Test.BSTArray.fst) | admit |
-| 22 | RBTree | ch13 | *(spec only — upstream build error)* | [Test.RBTree.fst](intree-tests/ch13-rbtree/Test.RBTree.fst) | admit |
+| 22 | RBTree | ch13 | *(spec only — upstream build error)* | [Test.RBTree.fst](intree-tests/ch13-rbtree/Test.RBTree.fst) | ✅ |
 
 ### Dynamic Programming (ch15)
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
-| 23 | LCS | ch15 | `lcs` | [Test.LCS.fst](intree-tests/ch15-dynamic-programming/Test.LCS.fst) | admit |
-| 24 | MatrixChain | ch15 | `matrix_chain_order` | [Test.MatrixChain.fst](intree-tests/ch15-dynamic-programming/Test.MatrixChain.fst) | admit |
-| 25 | RodCutting | ch15 | `rod_cutting` | [Test.RodCutting.fst](intree-tests/ch15-dynamic-programming/Test.RodCutting.fst) | admit |
+| 23 | LCS | ch15 | `lcs` | [Test.LCS.fst](intree-tests/ch15-dynamic-programming/Test.LCS.fst) | ✅ |
+| 24 | MatrixChain | ch15 | `matrix_chain_order` | [Test.MatrixChain.fst](intree-tests/ch15-dynamic-programming/Test.MatrixChain.fst) | ✅ |
+| 25 | RodCutting | ch15 | `rod_cutting` | [Test.RodCutting.fst](intree-tests/ch15-dynamic-programming/Test.RodCutting.fst) | ✅ |
 
 ### Greedy (ch16)
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
 | 26 | ActivitySelection | ch16 | `activity_selection` | [Test.ActivitySelection.fst](intree-tests/ch16-greedy/Test.ActivitySelection.fst) | admit |
-| 27 | Huffman | ch16 | `huffman_tree` | [Test.Huffman.fst](intree-tests/ch16-greedy/Test.Huffman.fst) | admit |
+| 27 | Huffman | ch16 | `huffman_tree` | [Test.Huffman.fst](intree-tests/ch16-greedy/Test.Huffman.fst) | ✅ |
 
 ### Union-Find & Graphs (ch21, ch22)
 
@@ -121,23 +120,23 @@ Proofs are being discharged incrementally — verified proofs are marked ✅.
 | 38 | GCD | ch31 | `gcd_impl` | [Test.GCD.fst](intree-tests/ch31-number-theory/Test.GCD.fst) | admit |
 | 39 | ModExp | ch31 | `mod_exp_impl` | [Test.ModExp.fst](intree-tests/ch31-number-theory/Test.ModExp.fst) | admit |
 | 40 | ModExpLR | ch31 | `mod_exp_lr_impl` | [Test.ModExpLR.fst](intree-tests/ch31-number-theory/Test.ModExpLR.fst) | admit |
-| 41 | ExtendedGCD | ch31 | *(spec only)* | [Test.ExtendedGCD.fst](intree-tests/ch31-number-theory/Test.ExtendedGCD.fst) | admit |
+| 41 | ExtendedGCD | ch31 | *(spec only)* | [Test.ExtendedGCD.fst](intree-tests/ch31-number-theory/Test.ExtendedGCD.fst) | ✅ |
 
 ### String Matching (ch32)
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
-| 42 | NaiveStringMatch | ch32 | *(spec only)* | [Test.NaiveStringMatch.fst](intree-tests/ch32-string-matching/Test.NaiveStringMatch.fst) | admit |
-| 43 | KMP | ch32 | *(spec only)* | [Test.KMP.fst](intree-tests/ch32-string-matching/Test.KMP.fst) | admit |
-| 44 | RabinKarp | ch32 | *(spec only)* | [Test.RabinKarp.fst](intree-tests/ch32-string-matching/Test.RabinKarp.fst) | admit |
+| 42 | NaiveStringMatch | ch32 | *(spec only)* | [Test.NaiveStringMatch.fst](intree-tests/ch32-string-matching/Test.NaiveStringMatch.fst) | ✅ |
+| 43 | KMP | ch32 | *(spec only)* | [Test.KMP.fst](intree-tests/ch32-string-matching/Test.KMP.fst) | ✅ |
+| 44 | RabinKarp | ch32 | *(spec only)* | [Test.RabinKarp.fst](intree-tests/ch32-string-matching/Test.RabinKarp.fst) | ✅ |
 
 ### Computational Geometry (ch33)
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
 | 45 | Segments | ch33 | `segments_intersect` | [Test.Segments.fst](intree-tests/ch33-comp-geometry/Test.Segments.fst) | admit |
-| 46 | GrahamScan | ch33 | `find_bottom` | [Test.GrahamScan.fst](intree-tests/ch33-comp-geometry/Test.GrahamScan.fst) | admit |
-| 47 | JarvisMarch | ch33 | `jarvis_march` | [Test.JarvisMarch.fst](intree-tests/ch33-comp-geometry/Test.JarvisMarch.fst) | admit |
+| 46 | GrahamScan | ch33 | `find_bottom` | [Test.GrahamScan.fst](intree-tests/ch33-comp-geometry/Test.GrahamScan.fst) | ✅ |
+| 47 | JarvisMarch | ch33 | `jarvis_march` | [Test.JarvisMarch.fst](intree-tests/ch33-comp-geometry/Test.JarvisMarch.fst) | ✅ |
 
 ### Approximation (ch35)
 
