@@ -13,6 +13,26 @@ module GR = Pulse.Lib.GhostReference
 module SZ = FStar.SizeT
 module Seq = FStar.Seq
 module FW = CLRS.Ch25.FloydWarshall.Spec
+module FWT = CLRS.Ch25.FloydWarshall.SpecTest
+
+#push-options "--fuel 8 --ifuel 4 --z3rlimit 400"
+
+let fw_test_input (contents0: Seq.seq int) : Lemma
+  (requires
+    Seq.length contents0 == 9 /\
+    Seq.index contents0 0 == 0 /\
+    Seq.index contents0 1 == 5 /\
+    Seq.index contents0 2 == FW.inf /\
+    Seq.index contents0 3 == 50 /\
+    Seq.index contents0 4 == 0 /\
+    Seq.index contents0 5 == 15 /\
+    Seq.index contents0 6 == 30 /\
+    Seq.index contents0 7 == FW.inf /\
+    Seq.index contents0 8 == 0)
+  (ensures Seq.equal contents0 FWT.test_adj)
+= assert_norm (Seq.length FWT.test_adj == 9);
+  assert (forall (i:nat). i < Seq.length contents0 ==> Seq.index contents0 i == Seq.index FWT.test_adj i);
+  Seq.lemma_eq_intro contents0 FWT.test_adj
 
 let completeness_fw_3 (contents0 contents: Seq.seq int) : Lemma
   (requires
@@ -37,7 +57,29 @@ let completeness_fw_3 (contents0 contents: Seq.seq int) : Lemma
     Seq.index contents 6 == 30 /\
     Seq.index contents 7 == 35 /\
     Seq.index contents 8 == 0)
-= admit()
+= fw_test_input contents0;
+  Seq.lemma_eq_elim contents0 FWT.test_adj;
+  assert (contents == FW.fw_outer FWT.test_adj 3 0);
+  FWT.test_correctness 0 0; FWT.test_00 ();
+  FWT.test_correctness 0 1; FWT.test_01 ();
+  FWT.test_correctness 0 2; FWT.test_02 ();
+  FWT.test_correctness 1 0; FWT.test_10 ();
+  FWT.test_correctness 1 1; FWT.test_11 ();
+  FWT.test_correctness 1 2; FWT.test_12 ();
+  FWT.test_correctness 2 0; FWT.test_20 ();
+  FWT.test_correctness 2 1; FWT.test_21 ();
+  FWT.test_correctness 2 2; FWT.test_22 ();
+  assert (Seq.index contents 0 == 0);
+  assert (Seq.index contents 1 == 5);
+  assert (Seq.index contents 2 == 20);
+  assert (Seq.index contents 3 == 45);
+  assert (Seq.index contents 4 == 0);
+  assert (Seq.index contents 5 == 15);
+  assert (Seq.index contents 6 == 30);
+  assert (Seq.index contents 7 == 35);
+  assert (Seq.index contents 8 == 0)
+
+#pop-options
 
 fn test_floyd_warshall ()
   requires emp

@@ -25,7 +25,10 @@ let completeness_union_find_same_root
               SZ.v r0 == Spec.pure_find (to_uf sp sr 3) 0 /\
               SZ.v r1 == Spec.pure_find (to_uf sp' sr 3) 1)
     (ensures r0 == r1)
-= admit()
+= assert (Spec.pure_find (to_uf sp' sr 3) 1 == Spec.pure_find (to_uf sp sr 3) 1);
+  assert (SZ.v r0 == Spec.pure_find (to_uf sp sr 3) 1);
+  assert (SZ.v r0 == SZ.v r1);
+  assert (r0 == r1)
 #pop-options
 
 fn test_union_find ()
@@ -53,14 +56,14 @@ fn test_union_find ()
             pure (Spec.uf_inv (to_uf sp sr 3) /\
                   Spec.pure_find (to_uf sp sr 3) 0 == Spec.pure_find (to_uf sp sr 3) 1));
 
-  let r0 = find_set parent 0sz 3sz;
+  let r0 = find_set parent 0sz 3sz #sp #sr;
   with sp'.
     assert (A.pts_to parent sp' **
             pure (Spec.uf_inv (to_uf sp' sr 3) /\
                   (forall (z: nat). z < 3 ==> Spec.pure_find (to_uf sp' sr 3) z == Spec.pure_find (to_uf sp sr 3) z) /\
                   SZ.v r0 == Spec.pure_find (to_uf sp sr 3) 0));
 
-  let r1 = find_set parent 1sz 3sz;
+  let r1 = find_set parent 1sz 3sz #sp' #sr;
   with sp''.
     assert (A.pts_to parent sp'' **
             pure (SZ.v r1 == Spec.pure_find (to_uf sp' sr 3) 1));

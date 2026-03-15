@@ -58,12 +58,14 @@ fn test_bst_array ()
 
   let t : bst = { keys = keys; valid = valid; cap = 1sz };
   let ctr = GR.alloc #nat 0;
+  let lo = hide (-100);
+  let hi = hide 100;
 
   with ks0 vs0.
     assert (A.pts_to keys ks0 ** A.pts_to valid vs0);
   bstarray_input_ok ks0 vs0;
 
-  let result = tree_search t 7 ctr;
+  let result = tree_search t #ks0 #vs0 #lo #hi 7 ctr;
   with ks1 vs1 cf.
     assert (A.pts_to keys ks1 ** A.pts_to valid vs1 ** GR.pts_to ctr cf **
             pure (Seq.length ks1 == 1 /\

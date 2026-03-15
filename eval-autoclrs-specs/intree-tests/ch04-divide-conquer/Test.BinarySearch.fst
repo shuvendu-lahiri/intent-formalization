@@ -14,6 +14,7 @@ module SZ = FStar.SizeT
 module Seq = FStar.Seq
 module BS = CLRS.Ch04.BinarySearch.Spec
 
+#push-options "--fuel 8 --ifuel 4 --z3rlimit 400"
 let sorted_input_12345 (s0: Seq.seq int) : Lemma
   (requires
     Seq.length s0 == 5 /\
@@ -23,7 +24,7 @@ let sorted_input_12345 (s0: Seq.seq int) : Lemma
     Seq.index s0 3 == 4 /\
     Seq.index s0 4 == 5)
   (ensures BS.is_sorted s0)
-= admit()
+= assert (BS.is_sorted s0)
 
 let completeness_found (s0: Seq.seq int) (result: SZ.t) : Lemma
   (requires
@@ -42,7 +43,15 @@ let completeness_found (s0: Seq.seq int) (result: SZ.t) : Lemma
       forall (i:nat). i < Seq.length s0 ==> Seq.index s0 i =!= 3
     )))
   (ensures result == 2sz)
-= admit()
+= if result = 5sz then begin
+    assert (Seq.index s0 2 =!= 3);
+    assert False
+  end else begin
+    assert (Seq.index s0 (SZ.v result) == 3);
+    assert (SZ.v result == 2);
+    assert (result == 2sz)
+  end
+#pop-options
 
 fn test_binary_search ()
   requires emp

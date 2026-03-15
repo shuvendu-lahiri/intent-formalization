@@ -46,9 +46,9 @@ Proofs are being discharged incrementally — verified proofs are marked ✅.
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
-| 1 | InsertionSort | ch02 | `insertion_sort` | [Test.InsertionSort.fst](intree-tests/ch02-getting-started/Test.InsertionSort.fst) | admit |
-| 2 | MergeSort | ch02 | `merge_sort` | [Test.MergeSort.fst](intree-tests/ch02-getting-started/Test.MergeSort.fst) | admit |
-| 3 | Heapsort | ch06 | `heapsort` | [Test.Heap.fst](intree-tests/ch06-heapsort/Test.Heap.fst) | admit |
+| 1 | InsertionSort | ch02 | `insertion_sort` | [Test.InsertionSort.fst](intree-tests/ch02-getting-started/Test.InsertionSort.fst) | ✅ |
+| 2 | MergeSort | ch02 | `merge_sort` | [Test.MergeSort.fst](intree-tests/ch02-getting-started/Test.MergeSort.fst) | ✅ |
+| 3 | Heapsort | ch06 | `heapsort` | [Test.Heap.fst](intree-tests/ch06-heapsort/Test.Heap.fst) | ✅ |
 | 4 | Quicksort | ch07 | `quicksort` | [Test.Quicksort.fst](intree-tests/ch07-quicksort/Test.Quicksort.fst) | ✅ |
 | 5 | BucketSort | ch08 | *(spec only)* | [Test.BucketSort.fst](intree-tests/ch08-linear-sorting/Test.BucketSort.fst) | admit |
 | 6 | RadixSort | ch08 | *(spec only)* | [Test.RadixSort.fst](intree-tests/ch08-linear-sorting/Test.RadixSort.fst) | admit |
@@ -58,7 +58,7 @@ Proofs are being discharged incrementally — verified proofs are marked ✅.
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
-| 8 | BinarySearch | ch04 | `binary_search` | [Test.BinarySearch.fst](intree-tests/ch04-divide-conquer/Test.BinarySearch.fst) | admit |
+| 8 | BinarySearch | ch04 | `binary_search` | [Test.BinarySearch.fst](intree-tests/ch04-divide-conquer/Test.BinarySearch.fst) | ✅ |
 | 9 | MaxSubarray | ch04 | *(spec only)* | [Test.MaxSubarray.fst](intree-tests/ch04-divide-conquer/Test.MaxSubarray.fst) | admit |
 | 10 | MatrixMultiply | ch04 | `matrix_multiply` | [Test.MatrixMultiply.fst](intree-tests/ch04-divide-conquer/Test.MatrixMultiply.fst) | admit |
 | 11 | MinMax | ch09 | `find_minimum`, `find_maximum` | [Test.MinMax.fst](intree-tests/ch09-order-statistics/Test.MinMax.fst) | admit |
@@ -98,7 +98,7 @@ Proofs are being discharged incrementally — verified proofs are marked ✅.
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
-| 28 | UnionFind | ch21 | `make_set`, `union`, `find_set` | [Test.UnionFind.fst](intree-tests/ch21-disjoint-sets/Test.UnionFind.fst) | admit |
+| 28 | UnionFind | ch21 | `make_set`, `union`, `find_set` | [Test.UnionFind.fst](intree-tests/ch21-disjoint-sets/Test.UnionFind.fst) | ✅ |
 | 29 | BFS | ch22 | `queue_bfs` | [Test.BFS.fst](intree-tests/ch22-elementary-graph/Test.BFS.fst) | admit |
 | 30 | DFS | ch22 | `stack_dfs` | [Test.DFS.fst](intree-tests/ch22-elementary-graph/Test.DFS.fst) | admit |
 | 31 | TopologicalSort | ch22 | `topological_sort` | [Test.TopologicalSort.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort.fst) | ✅ |
@@ -111,7 +111,7 @@ Proofs are being discharged incrementally — verified proofs are marked ✅.
 | 33 | Prim | ch23 | `prim` | [Test.Prim.fst](intree-tests/ch23-mst/Test.Prim.fst) | admit |
 | 34 | BellmanFord | ch24 | `bellman_ford` | [Test.BellmanFord.fst](intree-tests/ch24-sssp/Test.BellmanFord.fst) | admit |
 | 35 | Dijkstra | ch24 | `dijkstra` | [Test.Dijkstra.fst](intree-tests/ch24-sssp/Test.Dijkstra.fst) | admit |
-| 36 | FloydWarshall | ch25 | `floyd_warshall` | [Test.FloydWarshall.fst](intree-tests/ch25-apsp/Test.FloydWarshall.fst) | admit |
+| 36 | FloydWarshall | ch25 | `floyd_warshall` | [Test.FloydWarshall.fst](intree-tests/ch25-apsp/Test.FloydWarshall.fst) | ✅ |
 | 37 | MaxFlow | ch26 | `max_flow` | [Test.MaxFlow.fst](intree-tests/ch26-max-flow/Test.MaxFlow.fst) | admit |
 
 ### Number Theory (ch31)
