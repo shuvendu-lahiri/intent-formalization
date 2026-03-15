@@ -39,7 +39,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 
 **48 tests total — 41 call Pulse implementation functions, 7 are pure spec tests (no Impl module exists)**
 
-**43 completeness proofs discharged ✅, 5 remaining with admit().**
+**43 completeness proofs discharged ✅, 5 spec incomplete ❌.**
 
 ### Sorting (ch02, ch06, ch07, ch08)
 
@@ -73,7 +73,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 | 16 | SLL | ch10 | [`list_insert`](autoclrs/autoclrs/ch10-elementary-ds/CLRS.Ch10.SinglyLinkedList.Impl.fsti) | [Test.SLL.fst](intree-tests/ch10-elementary-ds/Test.SLL.fst) | ✅ |
 | 17 | DLL | ch10 | [`list_insert`](autoclrs/autoclrs/ch10-elementary-ds/CLRS.Ch10.DLL.Impl.fsti) | [Test.DLL.fst](intree-tests/ch10-elementary-ds/Test.DLL.fst) | ✅ |
 | 18 | Queue | ch10 | [`enqueue`, `dequeue`](autoclrs/autoclrs/ch10-elementary-ds/CLRS.Ch10.Queue.Impl.fsti) | [Test.Queue.fst](intree-tests/ch10-elementary-ds/Test.Queue.fst) | ✅ |
-| 19 | HashTable | ch11 | [`hash_insert`, `hash_search`](autoclrs/autoclrs/ch11-hash-tables/CLRS.Ch11.HashTable.Impl.fsti) | [Test.HashTable.fst](intree-tests/ch11-hash-tables/Test.HashTable.fst) | admit |
+| 19 | HashTable | ch11 | [`hash_insert`, `hash_search`](autoclrs/autoclrs/ch11-hash-tables/CLRS.Ch11.HashTable.Impl.fsti) | [Test.HashTable.fst](intree-tests/ch11-hash-tables/Test.HashTable.fst) | ❌ |
 | 20 | BST | ch12 | [`tree_insert`, `tree_search`](autoclrs/autoclrs/ch12-bst/CLRS.Ch12.BST.Impl.fsti) | [Test.BST.fst](intree-tests/ch12-bst/Test.BST.fst) | ✅ |
 | 21 | BSTArray | ch12 | [`tree_search`](autoclrs/autoclrs/ch12-bst/CLRS.Ch12.BSTArray.Impl.fsti) | [Test.BSTArray.fst](intree-tests/ch12-bst/Test.BSTArray.fst) | ✅ |
 | 22 | RBTree | ch13 | *(spec only — upstream build error)* | [Test.RBTree.fst](intree-tests/ch13-rbtree/Test.RBTree.fst) | ✅ |
@@ -106,9 +106,9 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
-| 32 | Kruskal | ch23 | [`kruskal`](autoclrs/autoclrs/ch23-mst/CLRS.Ch23.Kruskal.Impl.fsti) | [Test.Kruskal.fst](intree-tests/ch23-mst/Test.Kruskal.fst) | admit |
-| 33 | Prim | ch23 | [`prim`](autoclrs/autoclrs/ch23-mst/CLRS.Ch23.Prim.Impl.fsti) | [Test.Prim.fst](intree-tests/ch23-mst/Test.Prim.fst) | admit |
-| 34 | BellmanFord | ch24 | [`bellman_ford`](autoclrs/autoclrs/ch24-sssp/CLRS.Ch24.BellmanFord.Impl.fsti) | [Test.BellmanFord.fst](intree-tests/ch24-sssp/Test.BellmanFord.fst) | admit |
+| 32 | Kruskal | ch23 | [`kruskal`](autoclrs/autoclrs/ch23-mst/CLRS.Ch23.Kruskal.Impl.fsti) | [Test.Kruskal.fst](intree-tests/ch23-mst/Test.Kruskal.fst) | ❌ |
+| 33 | Prim | ch23 | [`prim`](autoclrs/autoclrs/ch23-mst/CLRS.Ch23.Prim.Impl.fsti) | [Test.Prim.fst](intree-tests/ch23-mst/Test.Prim.fst) | ❌ |
+| 34 | BellmanFord | ch24 | [`bellman_ford`](autoclrs/autoclrs/ch24-sssp/CLRS.Ch24.BellmanFord.Impl.fsti) | [Test.BellmanFord.fst](intree-tests/ch24-sssp/Test.BellmanFord.fst) | ❌ |
 | 35 | Dijkstra | ch24 | [`dijkstra`](autoclrs/autoclrs/ch24-sssp/CLRS.Ch24.Dijkstra.Impl.fsti) | [Test.Dijkstra.fst](intree-tests/ch24-sssp/Test.Dijkstra.fst) | ✅ |
 | 36 | FloydWarshall | ch25 | [`floyd_warshall`](autoclrs/autoclrs/ch25-apsp/CLRS.Ch25.FloydWarshall.Impl.fsti) | [Test.FloydWarshall.fst](intree-tests/ch25-apsp/Test.FloydWarshall.fst) | ✅ |
 | 37 | MaxFlow | ch26 | [`max_flow`](autoclrs/autoclrs/ch26-max-flow/CLRS.Ch26.MaxFlow.Impl.fsti) | [Test.MaxFlow.fst](intree-tests/ch26-max-flow/Test.MaxFlow.fst) | ✅ |
@@ -142,13 +142,25 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
-| 48 | VertexCover | ch35 | [`approx_vertex_cover`](autoclrs/autoclrs/ch35-approximation/CLRS.Ch35.VertexCover.Impl.fsti) | [Test.VertexCover.fst](intree-tests/ch35-approximation/Test.VertexCover.fst) | admit |
+| 48 | VertexCover | ch35 | [`approx_vertex_cover`](autoclrs/autoclrs/ch35-approximation/CLRS.Ch35.VertexCover.Impl.fsti) | [Test.VertexCover.fst](intree-tests/ch35-approximation/Test.VertexCover.fst) | ❌ |
 
 ### Legend
 
-- **Impl Function**: the Pulse implementation function called in the test (from `*.Impl` module)
+- **Impl Function**: the Pulse implementation function called in the test (from `*.Impl` module). Links to the `.fsti` in the AutoCLRS submodule.
 - *(spec only)*: no `Impl` module exists in AutoCLRS; test uses pure F\* spec functions
-- **Proof**: ✅ = completeness lemma proved, admit = proof obligation written with `admit()`
+- **Proof**: ✅ = completeness proved, ❌ = spec incomplete (postcondition too weak to determine output)
+
+### Completeness Failures (❌)
+
+These 5 algorithms have postconditions that are **too weak to uniquely determine the output** for the given test input — a genuine spec incompleteness finding:
+
+| Algorithm | Reason |
+|-----------|--------|
+| HashTable | `hash_insert` postcondition allows `ok=false` (table full), but an empty size-5 table always has room — spec doesn't expose this |
+| Kruskal | `result_is_forest_adj` only guarantees a forest subset of edges, not the *specific* MST edges |
+| Prim | `prim_correct` guarantees MST properties but doesn't force `parent[1]=0` for a unique MST |
+| BellmanFord | postcondition allows `ok=false` (negative cycle detected), but this graph has no negative cycles — spec doesn't expose this |
+| VertexCover | `is_cover` + 2-approx bound satisfied by `[1,0]` as well as `[1,1]` — spec doesn't force both endpoints |
 
 ### Example: Quicksort Completeness Test
 
