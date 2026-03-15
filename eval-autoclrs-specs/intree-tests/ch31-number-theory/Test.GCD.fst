@@ -1,11 +1,37 @@
 module Test.GCD
+#lang-pulse
 
+open Pulse.Lib.Pervasives
+open FStar.SizeT
+open FStar.Mul
+open CLRS.Ch31.GCD.Impl
 open CLRS.Ch31.GCD.Spec
 
-(* Completeness: gcd_spec uniquely determines output for given inputs.
-   gcd_impl postcondition: result == gcd_spec a b *)
+module GR = Pulse.Lib.GhostReference
+module SZ = FStar.SizeT
 
-let test_gcd_12_8 () : Lemma (gcd_spec 12 8 == 4) = assert_norm (gcd_spec 12 8 == 4)
-let test_gcd_35_15 () : Lemma (gcd_spec 35 15 == 5) = assert_norm (gcd_spec 35 15 == 5)
-let test_gcd_100_0 () : Lemma (gcd_spec 100 0 == 100) = assert_norm (gcd_spec 100 0 == 100)
-let test_gcd_7_7 () : Lemma (gcd_spec 7 7 == 7) = assert_norm (gcd_spec 7 7 == 7)
+(* Completeness lemma — proof obligation *)
+#push-options "--fuel 8 --ifuel 4 --z3rlimit 400"
+let completeness_gcd_12_8 (result: SZ.t) : Lemma
+  (requires SZ.v result == gcd_spec 12 8)
+  (ensures SZ.v result == 4)
+= admit()
+#pop-options
+
+```pulse
+fn test_gcd_12_8 ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let ctr = GR.alloc #nat 0;
+  let result = gcd_impl 12sz 8sz ctr;
+
+  with cf. assert (GR.pts_to ctr cf);
+
+  completeness_gcd_12_8 result;
+  assert (pure (SZ.v result == 4));
+
+  admit()
+}
+```

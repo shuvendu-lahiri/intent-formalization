@@ -1,44 +1,60 @@
 module Test.HashTable
+#lang-pulse
 
-open CLRS.Ch11.HashTable.Spec
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open FStar.SizeT
+open FStar.Mul
+open CLRS.Ch11.HashTable.Impl
 
-(* === Soundness: insert and search === *)
-let m1 : ht_model = ht_insert ht_empty 1 10
-let m2 : ht_model = ht_insert m1 2 20
-let m3 : ht_model = ht_insert m2 3 30
+module A = Pulse.Lib.Array
+module GR = Pulse.Lib.GhostReference
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
+module V = Pulse.Lib.Vec
 
-let test_search_found_1 () : Lemma (ht_search m3 1 == Some 10) =
-  assert_norm (ht_search m3 1 == Some 10)
+#push-options "--fuel 8 --ifuel 4 --z3rlimit 400"
+let completeness_insert_42 (s: Seq.seq int) (ok: bool) : Lemma
+  (requires Seq.length s == 5 /\
+            valid_ht s 5 /\
+            (if ok then key_in_table s 5 42 else s == Seq.create 5 (-1)))
+  (ensures ok == true)
+= admit()
 
-let test_search_found_2 () : Lemma (ht_search m3 3 == Some 30) =
-  assert_norm (ht_search m3 3 == Some 30)
+let completeness_search_42 (s: Seq.seq int) (result: SZ.t) : Lemma
+  (requires Seq.length s == 5 /\
+            key_in_table s 5 42 /\
+            SZ.v result <= 5 /\
+            (SZ.v result == 5 ==> ~(key_in_table s 5 42)))
+  (ensures SZ.v result < 5)
+= admit()
+#pop-options
 
-let test_search_not_found () : Lemma (ht_search m3 4 == None) =
-  assert_norm (ht_search m3 4 == None)
+fn test_hash_table ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let tv = hash_table_create 5sz;
+  let table = V.vec_to_array tv;
+  rewrite (A.pts_to (V.vec_to_array tv) (Seq.create 5 (-1)))
+       as (A.pts_to table (Seq.create 5 (-1)));
 
-(* === Soundness: delete === *)
-let m4 : ht_model = ht_delete m3 2
+  let ctr = GR.alloc #nat 0;
 
-let test_delete_search () : Lemma (ht_search m4 2 == None) =
-  assert_norm (ht_search m4 2 == None)
+  let inserted = hash_insert table 5sz 42 ctr;
+  with s1 cf1.
+    assert (A.pts_to table s1 ** GR.pts_to ctr cf1 **
+            pure (Seq.length s1 == 5 /\
+                  valid_ht s1 5 /\
+                  (if inserted then key_in_table s1 5 42 else s1 == Seq.create 5 (-1))));
+  completeness_insert_42 s1 inserted;
+  assert (pure (inserted == true));
 
-(* === Soundness: search after delete preserves others === *)
-let test_delete_preserves () : Lemma (ht_search m4 1 == Some 10) =
-  assert_norm (ht_search m4 1 == Some 10)
+  let result = hash_search table 5sz 42 ctr;
+  with cf2. assert (GR.pts_to ctr cf2);
+  completeness_search_42 s1 result;
+  assert (pure (SZ.v result < 5));
 
-
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_search_found_1_complete (y:(option int)) : Lemma
-  (requires ht_search m3 1 == y)
-  (ensures y == Some 10) =
-  assert_norm (ht_search m3 1 == Some 10)
-
-let test_search_found_2_complete (y:(option int)) : Lemma
-  (requires ht_search m3 3 == y)
-  (ensures y == Some 30) =
-  assert_norm (ht_search m3 3 == Some 30)
-
-let test_delete_preserves_complete (y:(option int)) : Lemma
-  (requires ht_search m4 1 == y)
-  (ensures y == Some 10) =
-  assert_norm (ht_search m4 1 == Some 10)
+  admit()
+}

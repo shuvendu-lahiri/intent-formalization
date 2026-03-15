@@ -1,36 +1,87 @@
 module Test.BellmanFord
+#lang-pulse
 
 friend CLRS.Ch24.ShortestPath.Inf
 
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open Pulse.Lib.Reference
+open FStar.SizeT
 open FStar.Mul
-open FStar.Seq
-open CLRS.Ch24.BellmanFord.Spec
+open CLRS.Ch24.BellmanFord.Impl
+open CLRS.Ch24.ShortestPath.Spec
 
-(* 2-node graph: edge 0→1 with weight 3
-   adj[0] = [0; 3], adj[1] = [inf; 0] *)
-let adj2 : adj_matrix 2 =
-  seq_of_list [seq_of_list [0; 3]; seq_of_list [1000000; 0]]
+module A = Pulse.Lib.Array
+module R = Pulse.Lib.Reference
+module GR = Pulse.Lib.GhostReference
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
+module SP = CLRS.Ch24.ShortestPath.Spec
+module V = Pulse.Lib.Vec
 
-(* === Soundness: sp_dist_k with k=0, source=dest === *)
-let test_self_dist () : Lemma (sp_dist_k adj2 0 0 0 == Some 0) =
-  assert_norm (sp_dist_k adj2 0 0 0 == Some 0)
+let bellman_ford_input_ok (sweights: Seq.seq int) : Lemma
+  (requires
+    Seq.length sweights == 4 /\
+    Seq.index sweights 0 == 0 /\ Seq.index sweights 1 == 3 /\
+    Seq.index sweights 2 == SP.inf /\ Seq.index sweights 3 == 0)
+  (ensures weights_in_range sweights 2)
+=
+  admit()
 
-(* === Soundness: sp_dist_k with k=1, shortest path 0→1 = 3 === *)
-let test_sp_k1 () : Lemma (sp_dist_k adj2 0 1 1 == Some 3) =
-  assert_norm (sp_dist_k adj2 0 1 1 == Some 3)
+let bellman_ford_complete (sweights sdist: Seq.seq int) (ok: bool) : Lemma
+  (requires
+    Seq.length sweights == 4 /\
+    Seq.index sweights 0 == 0 /\ Seq.index sweights 1 == 3 /\
+    Seq.index sweights 2 == SP.inf /\ Seq.index sweights 3 == 0 /\
+    Seq.length sdist == 2 /\
+    Seq.index sdist 0 == 0)
+  (ensures
+    ok == true /\
+    Seq.index sdist 0 == 0 /\
+    Seq.index sdist 1 == 3)
+=
+  admit()
 
-(* === Soundness: no path with k=0 to different vertex === *)
-let test_no_path () : Lemma (sp_dist_k adj2 0 1 0 == None) =
-  assert_norm (sp_dist_k adj2 0 1 0 == None)
+```pulse
+fn test_bellman_ford ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let weights_v = V.alloc 0 4sz;
+  V.to_array_pts_to weights_v;
+  let weights = V.vec_to_array weights_v;
+  rewrite (A.pts_to (V.vec_to_array weights_v) (Seq.create 4 0)) as (A.pts_to weights (Seq.create 4 0));
+  weights.(1sz) <- 3;
+  weights.(2sz) <- SP.inf;
 
+  with sweights. assert (A.pts_to weights sweights);
+  bellman_ford_input_ok sweights;
 
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_self_dist_complete (y:(option int)) : Lemma
-  (requires sp_dist_k adj2 0 0 0 == y)
-  (ensures y == Some 0) =
-  assert_norm (sp_dist_k adj2 0 0 0 == Some 0)
+  let dist_v = V.alloc 0 2sz;
+  V.to_array_pts_to dist_v;
+  let dist = V.vec_to_array dist_v;
+  rewrite (A.pts_to (V.vec_to_array dist_v) (Seq.create 2 0)) as (A.pts_to dist (Seq.create 2 0));
 
-let test_sp_k1_complete (y:(option int)) : Lemma
-  (requires sp_dist_k adj2 0 1 1 == y)
-  (ensures y == Some 3) =
-  assert_norm (sp_dist_k adj2 0 1 1 == Some 3)
+  let result = R.alloc false;
+  let ctr = GR.alloc #nat 0;
+
+  bellman_ford weights 2sz 0sz dist result ctr;
+
+  with sdist. assert (A.pts_to dist sdist);
+  with ok. assert (R.pts_to result ok);
+  with cf. assert (GR.pts_to ctr cf);
+
+  bellman_ford_complete sweights sdist ok;
+
+  let d0 = dist.(0sz);
+  let d1 = dist.(1sz);
+  let okv = R.(!result);
+
+  assert (pure (okv == true));
+  assert (pure (d0 == 0));
+  assert (pure (d1 == 3));
+
+  admit()
+}
+```

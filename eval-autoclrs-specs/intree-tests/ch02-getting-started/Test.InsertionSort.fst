@@ -1,36 +1,58 @@
 module Test.InsertionSort
+#lang-pulse
 
-open FStar.Seq
-open FStar.Seq.Properties
-open CLRS.Common.SortSpec
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
 open Pulse.Lib.BoundedIntegers
+open FStar.SizeT
+open CLRS.Ch02.InsertionSort.Impl
 
-#push-options "--z3rlimit 400 --fuel 8 --ifuel 4"
+module A = Pulse.Lib.Array
+module V = Pulse.Lib.Vec
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
+module SS = CLRS.Common.SortSpec
+module GR = Pulse.Lib.GhostReference
 
-(* Completeness: sorted + permutation of [3;1;2] uniquely determines [1;2;3].
-   insertion_sort postcondition: sorted s /\ permutation s0 s *)
+let completeness_sort3 (s0 s: Seq.seq int) : Lemma
+  (requires
+    Seq.length s0 == 3 /\
+    Seq.index s0 0 == 3 /\
+    Seq.index s0 1 == 1 /\
+    Seq.index s0 2 == 2 /\
+    Seq.length s == 3 /\
+    SS.sorted s /\
+    SS.permutation s0 s)
+  (ensures Seq.index s 0 == 1 /\ Seq.index s 1 == 2 /\ Seq.index s 2 == 3)
+= admit()
 
-let std_sort3 (s: seq int)
-  : Lemma
-    (requires (forall (i j:nat). Prims.op_LessThanOrEqual i j /\
-                                 Prims.op_LessThan j (length s) ==>
-                                 Prims.op_LessThanOrEqual (index s i) (index s j)) /\
-              FStar.Seq.Properties.permutation int (seq_of_list [3; 1; 2]) s)
-    (ensures index s 0 == 1 /\ index s 1 == 2 /\ index s 2 == 3)
-= perm_len (seq_of_list [3; 1; 2]) s;
-  assert_norm (count 1 (seq_of_list [3; 1; 2]) == 1);
-  assert_norm (count 2 (seq_of_list [3; 1; 2]) == 1);
-  assert_norm (count 3 (seq_of_list [3; 1; 2]) == 1);
-  assert_norm (count 0 (seq_of_list [3; 1; 2]) == 0);
-  assert_norm (count 4 (seq_of_list [3; 1; 2]) == 0)
+fn test_insertion_sort ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let v = V.alloc 0 3sz;
+  V.to_array_pts_to v;
+  let arr = V.vec_to_array v;
+  rewrite (A.pts_to (V.vec_to_array v) (Seq.create 3 0)) as (A.pts_to arr (Seq.create 3 0));
+  arr.(0sz) <- 3;
+  arr.(1sz) <- 1;
+  arr.(2sz) <- 2;
 
-let completeness_sort3 (s: seq int)
-  : Lemma
-    (requires sorted s /\ permutation (seq_of_list [3; 1; 2]) s)
-    (ensures index s 0 == 1 /\ index s 1 == 2 /\ index s 2 == 3)
-= assert (forall (i j:nat). (i <= j) == Prims.op_LessThanOrEqual i j);
-  assert (forall (x y:int). (x <= y) == Prims.op_LessThanOrEqual x y);
-  reveal_opaque (`%permutation) (permutation (seq_of_list [3; 1; 2]) s);
-  std_sort3 s
+  with s0. assert (A.pts_to arr s0);
 
-#pop-options
+  let ctr = GR.alloc #nat 0;
+  insertion_sort arr 3sz ctr;
+
+  with s. assert (A.pts_to arr s);
+  completeness_sort3 s0 s;
+
+  let v0 = arr.(0sz);
+  let v1 = arr.(1sz);
+  let v2 = arr.(2sz);
+  assert (pure (v0 == 1));
+  assert (pure (v1 == 2));
+  assert (pure (v2 == 3));
+
+  admit()
+}

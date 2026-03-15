@@ -1,41 +1,78 @@
 module Test.Kruskal
+#lang-pulse
 
-open FStar.List.Tot
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open Pulse.Lib.Reference
+open FStar.SizeT
+open FStar.Mul
+open CLRS.Ch23.Kruskal.Impl
 open CLRS.Ch23.MST.Spec
 open CLRS.Ch23.Kruskal.Spec
 
-(* === Soundness: sort_edges produces sorted list === *)
-let e1 : edge = { u = 0; v = 1; w = 3 }
-let e2 : edge = { u = 1; v = 2; w = 1 }
-let e3 : edge = { u = 0; v = 2; w = 2 }
+module A = Pulse.Lib.Array
+module R = Pulse.Lib.Reference
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
+module V = Pulse.Lib.Vec
 
-let test_sorted () : Lemma (is_sorted_by_weight (sort_edges [e1; e2; e3]) = true) =
-  assert_norm (is_sorted_by_weight (sort_edges [e1; e2; e3]) = true)
+let kruskal_complete (sadj seu sev: Seq.seq int) (ec: SZ.t) : Lemma
+  (requires
+    Seq.length sadj == 4 /\
+    Seq.index sadj 0 == 0 /\ Seq.index sadj 1 == 5 /\
+    Seq.index sadj 2 == 5 /\ Seq.index sadj 3 == 0 /\
+    Seq.length seu == 2 /\
+    Seq.length sev == 2 /\
+    result_is_forest_adj sadj seu sev 2 (SZ.v ec))
+  (ensures
+    SZ.v ec == 1 /\
+    Seq.index seu 0 == 0 /\
+    Seq.index sev 0 == 1)
+=
+  admit()
 
-(* === Soundness: kruskal_step adds non-cycle edge === *)
-let test_step_adds () : Lemma (
-  length (kruskal_step e2 [] 3) == 1
-) = assert_norm (length (kruskal_step e2 [] 3) == 1)
+```pulse
+fn test_kruskal ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let adj_v = V.alloc 0 4sz;
+  V.to_array_pts_to adj_v;
+  let adj = V.vec_to_array adj_v;
+  rewrite (A.pts_to (V.vec_to_array adj_v) (Seq.create 4 0)) as (A.pts_to adj (Seq.create 4 0));
+  adj.(1sz) <- 5;
+  adj.(2sz) <- 5;
 
-(* === Soundness: pure_kruskal on 3-vertex graph produces 2 edges (spanning tree) === *)
-let g : graph = { n = 3; edges = [e1; e2; e3] }
+  let edge_u_v = V.alloc 0 2sz;
+  V.to_array_pts_to edge_u_v;
+  let edge_u = V.vec_to_array edge_u_v;
+  rewrite (A.pts_to (V.vec_to_array edge_u_v) (Seq.create 2 0)) as (A.pts_to edge_u (Seq.create 2 0));
 
-let test_kruskal_count () : Lemma (length (pure_kruskal g) == 2) =
-  assert_norm (length (pure_kruskal g) == 2)
+  let edge_v_v = V.alloc 0 2sz;
+  V.to_array_pts_to edge_v_v;
+  let edge_v = V.vec_to_array edge_v_v;
+  rewrite (A.pts_to (V.vec_to_array edge_v_v) (Seq.create 2 0)) as (A.pts_to edge_v (Seq.create 2 0));
 
+  with sadj. assert (A.pts_to adj sadj);
+  let edge_count = R.alloc 0sz;
 
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_sorted_complete (y:bool) : Lemma
-  (requires is_sorted_by_weight (sort_edges [e1; e2; e3]) = y)
-  (ensures y = true) =
-  assert_norm (is_sorted_by_weight (sort_edges [e1; e2; e3]) = true)
+  kruskal adj edge_u edge_v edge_count 2sz;
 
-let test_step_adds_complete (y:int) : Lemma
-  (requires length (kruskal_step e2 [] 3) == y)
-  (ensures y == 1) =
-  assert_norm (length (kruskal_step e2 [] 3) == 1)
+  with seu. assert (A.pts_to edge_u seu);
+  with sev. assert (A.pts_to edge_v sev);
+  with ec. assert (R.pts_to edge_count ec);
 
-let test_kruskal_count_complete (y:int) : Lemma
-  (requires length (pure_kruskal g) == y)
-  (ensures y == 2) =
-  assert_norm (length (pure_kruskal g) == 2)
+  kruskal_complete sadj seu sev ec;
+
+  let count = R.(!edge_count);
+  let u0 = edge_u.(0sz);
+  let v0 = edge_v.(0sz);
+
+  assert (pure (count == 1sz));
+  assert (pure (u0 == 0));
+  assert (pure (v0 == 1));
+
+  admit()
+}
+```

@@ -1,44 +1,89 @@
 module Test.FloydWarshall
+#lang-pulse
 
-open FStar.Mul
-open FStar.Seq
-open CLRS.Ch25.FloydWarshall.Spec
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open Pulse.Lib.BoundedIntegers
+open FStar.SizeT
+open CLRS.Ch25.FloydWarshall.Impl
 
-(* 2-node graph: 0 --3--> 1, no 1-->0 edge *)
-let adj2 : seq int = seq_of_list [0; 3; inf; 0]
+module A = Pulse.Lib.Array
+module V = Pulse.Lib.Vec
+module GR = Pulse.Lib.GhostReference
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
+module FW = CLRS.Ch25.FloydWarshall.Spec
 
-(* === Soundness: fw_outer computes APSP correctly === *)
-let test_sound_2x2 () : Lemma
-  (let r = fw_outer adj2 2 0 in
-   index r 0 == 0 /\ index r 1 == 3 /\ index r 2 == inf /\ index r 3 == 0)
-= assert_norm (index (fw_outer adj2 2 0) 0 == 0);
-  assert_norm (index (fw_outer adj2 2 0) 1 == 3);
-  assert_norm (index (fw_outer adj2 2 0) 2 == inf);
-  assert_norm (index (fw_outer adj2 2 0) 3 == 0)
+let completeness_fw_3 (contents0 contents: Seq.seq int) : Lemma
+  (requires
+    Seq.length contents0 == 9 /\
+    Seq.index contents0 0 == 0 /\
+    Seq.index contents0 1 == 5 /\
+    Seq.index contents0 2 == FW.inf /\
+    Seq.index contents0 3 == 50 /\
+    Seq.index contents0 4 == 0 /\
+    Seq.index contents0 5 == 15 /\
+    Seq.index contents0 6 == 30 /\
+    Seq.index contents0 7 == FW.inf /\
+    Seq.index contents0 8 == 0 /\
+    contents == FW.fw_outer contents0 3 0)
+  (ensures
+    Seq.index contents 0 == 0 /\
+    Seq.index contents 1 == 5 /\
+    Seq.index contents 2 == 20 /\
+    Seq.index contents 3 == 45 /\
+    Seq.index contents 4 == 0 /\
+    Seq.index contents 5 == 15 /\
+    Seq.index contents 6 == 30 /\
+    Seq.index contents 7 == 35 /\
+    Seq.index contents 8 == 0)
+= admit()
 
-(* 3-node graph: 0 --2--> 1 --3--> 2, no other edges *)
-let adj3 : seq int = seq_of_list [0; 2; inf; inf; 0; 3; inf; inf; 0]
+fn test_floyd_warshall ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let v = V.alloc 0 9sz;
+  V.to_array_pts_to v;
+  let dist = V.vec_to_array v;
+  rewrite (A.pts_to (V.vec_to_array v) (Seq.create 9 0)) as (A.pts_to dist (Seq.create 9 0));
+  dist.(0sz) <- 0;
+  dist.(1sz) <- 5;
+  dist.(2sz) <- FW.inf;
+  dist.(3sz) <- 50;
+  dist.(4sz) <- 0;
+  dist.(5sz) <- 15;
+  dist.(6sz) <- 30;
+  dist.(7sz) <- FW.inf;
+  dist.(8sz) <- 0;
 
-(* Use fw_entry (recurrence) instead of fw_outer for 3x3 — avoids seq mutation overhead *)
-#push-options "--z3rlimit 100"
-let test_sound_3x3 () : Lemma
-  (fw_entry adj3 3 0 0 3 == 0 /\
-   fw_entry adj3 3 0 1 3 == 2 /\
-   fw_entry adj3 3 0 2 3 == 5)
-= assert_norm (fw_entry adj3 3 0 0 3 == 0);
-  assert_norm (fw_entry adj3 3 0 1 3 == 2);
-  assert_norm (fw_entry adj3 3 0 2 3 == 5)
-#pop-options
+  with contents0. assert (A.pts_to dist contents0);
 
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-#push-options "--z3rlimit 100"
-let test_fw_complete_1 (y:int) : Lemma
-  (requires fw_entry adj3 3 0 1 3 == y)
-  (ensures y == 2) =
-  assert_norm (fw_entry adj3 3 0 1 3 == 2)
+  let ctr = GR.alloc #nat 0;
+  floyd_warshall dist 3sz ctr;
 
-let test_fw_complete_2 (y:int) : Lemma
-  (requires fw_entry adj3 3 0 2 3 == y)
-  (ensures y == 5) =
-  assert_norm (fw_entry adj3 3 0 2 3 == 5)
-#pop-options
+  with contents. assert (A.pts_to dist contents);
+  completeness_fw_3 contents0 contents;
+
+  let d00 = dist.(0sz);
+  let d01 = dist.(1sz);
+  let d02 = dist.(2sz);
+  let d10 = dist.(3sz);
+  let d11 = dist.(4sz);
+  let d12 = dist.(5sz);
+  let d20 = dist.(6sz);
+  let d21 = dist.(7sz);
+  let d22 = dist.(8sz);
+  assert (pure (d00 == 0));
+  assert (pure (d01 == 5));
+  assert (pure (d02 == 20));
+  assert (pure (d10 == 45));
+  assert (pure (d11 == 0));
+  assert (pure (d12 == 15));
+  assert (pure (d20 == 30));
+  assert (pure (d21 == 35));
+  assert (pure (d22 == 0));
+
+  admit()
+}

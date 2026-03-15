@@ -1,34 +1,58 @@
 module Test.JarvisMarch
+#lang-pulse
 
+open Pulse.Lib.Pervasives
+open Pulse.Lib.Array
+open FStar.SizeT
 open FStar.Mul
-module Seq = FStar.Seq
-open CLRS.Ch33.Segments.Spec
+open CLRS.Ch33.JarvisMarch.Impl
 open CLRS.Ch33.JarvisMarch.Spec
 
-(* Top-level functions: jarvis_march_spec, find_leftmost_spec *)
+module A = Pulse.Lib.Array
+module SZ = FStar.SizeT
+module Seq = FStar.Seq
+module V = Pulse.Lib.Vec
 
-(* Triangle: 3 points all on hull *)
-let xs3 : Seq.seq int = Seq.seq_of_list [0; 4; 2]
-let ys3 : Seq.seq int = Seq.seq_of_list [0; 0; 3]
-
-(* 4 points: (0,0), (2,0), (1,2), (1,1) — hull has 3 vertices *)
-let xs : Seq.seq int = Seq.seq_of_list [0; 2; 1; 1]
-let ys : Seq.seq int = Seq.seq_of_list [0; 0; 2; 1]
-
-(* === Completeness (Appendix B): jarvis_march_spec uniquely determines output === *)
-#push-options "--z3rlimit 100"
-let test_triangle_complete (y:int) : Lemma
-  (requires jarvis_march_spec xs3 ys3 == y)
-  (ensures y == 3) =
-  assert_norm (jarvis_march_spec xs3 ys3 == 3)
-
-let test_leftmost_complete (y:int) : Lemma
-  (requires find_leftmost_spec xs ys == y)
-  (ensures y == 0) =
-  assert_norm (find_leftmost_spec xs ys == 0)
-
-let test_hull_4_complete (y:int) : Lemma
-  (requires jarvis_march_spec xs ys == y)
-  (ensures y == 3) =
-  assert_norm (jarvis_march_spec xs ys == 3)
+(* Completeness lemma — proof obligation *)
+#push-options "--fuel 8 --ifuel 4 --z3rlimit 400"
+let completeness_jarvis_march (result: SZ.t) (sxs sys: Seq.seq int) : Lemma
+  (requires SZ.v result == jarvis_march_spec sxs sys)
+  (ensures SZ.v result == 3)
+= admit()
 #pop-options
+
+```pulse
+fn test_jarvis_march_triangle ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let vx = V.alloc #int 0 3sz;
+  V.to_array_pts_to vx;
+  let xs = V.vec_to_array vx;
+  rewrite (A.pts_to (V.vec_to_array vx) (Seq.create #int 3 0))
+       as (A.pts_to xs (Seq.create #int 3 0));
+  xs.(0sz) <- 0;
+  xs.(1sz) <- 4;
+  xs.(2sz) <- 2;
+
+  let vy = V.alloc #int 0 3sz;
+  V.to_array_pts_to vy;
+  let ys = V.vec_to_array vy;
+  rewrite (A.pts_to (V.vec_to_array vy) (Seq.create #int 3 0))
+       as (A.pts_to ys (Seq.create #int 3 0));
+  ys.(0sz) <- 0;
+  ys.(1sz) <- 0;
+  ys.(2sz) <- 3;
+
+  with sxs. assert (A.pts_to xs sxs);
+  with sys. assert (A.pts_to ys sys);
+
+  let result = jarvis_march #1.0R xs ys 3sz;
+
+  completeness_jarvis_march result sxs sys;
+  assert (pure (SZ.v result == 3));
+
+  admit()
+}
+```

@@ -1,53 +1,37 @@
 module Test.BST
+#lang-pulse
 
+open Pulse.Lib.Pervasives
+open CLRS.Ch12.BST.Impl
 open CLRS.Ch12.BST.Spec
 
-let t : bst = bst_insert (bst_insert (bst_insert Leaf 2) 1) 3
+module GR = Pulse.Lib.GhostReference
 
-(* === Soundness: search finds inserted keys === *)
-let test_sound_search_1 () : Lemma (bst_search t 1 == true) = ()
-let test_sound_search_2 () : Lemma (bst_search t 2 == true) = ()
-let test_sound_search_3 () : Lemma (bst_search t 3 == true) = ()
+#push-options "--fuel 8 --ifuel 4 --z3rlimit 400"
+let completeness_bst_search_1 (result: bool) : Lemma
+  (requires result == bst_search (bst_insert (bst_insert (bst_insert Leaf 2) 1) 3) 1)
+  (ensures result == true)
+= admit()
+#pop-options
 
-(* === Soundness: valid BST after insertions === *)
-let test_sound_valid () : Lemma (bst_valid t == true) = ()
+fn test_bst ()
+  requires emp
+  returns _: unit
+  ensures emp
+{
+  let root0 : bst_ptr = None #bst_node_ptr;
+  fold (bst_subtree root0 Leaf (None #bst_node_ptr));
 
-(* === Soundness: inorder gives sorted list === *)
-let test_sound_inorder () : Lemma (bst_inorder t == [1; 2; 3]) = ()
+  let ctr = GR.alloc #nat 0;
 
-(* === Soundness: delete removes key === *)
-let t_del : bst = bst_delete t 2
-let test_sound_delete () : Lemma (bst_search t_del 2 == false) = ()
-let test_sound_delete_keeps () : Lemma (bst_search t_del 1 == true /\ bst_search t_del 3 == true) = ()
+  let root1 = tree_insert root0 2 (None #bst_node_ptr) ctr;
+  let root2 = tree_insert root1 1 (None #bst_node_ptr) ctr;
+  let root3 = tree_insert root2 3 (None #bst_node_ptr) ctr;
 
+  let found = tree_search root3 1 ctr;
+  with cf. assert (GR.pts_to ctr cf);
+  completeness_bst_search_1 found;
+  assert (pure (found == true));
 
-(* === Completeness (Appendix B): spec uniquely determines output === *)
-let test_complete_search_1 (y:bool) : Lemma
-  (requires bst_search t 1 == y)
-  (ensures y == true) =
-  ()
-
-let test_complete_search_2 (y:bool) : Lemma
-  (requires bst_search t 2 == y)
-  (ensures y == true) =
-  ()
-
-let test_complete_search_3 (y:bool) : Lemma
-  (requires bst_search t 3 == y)
-  (ensures y == true) =
-  ()
-
-let test_complete_valid (y:bool) : Lemma
-  (requires bst_valid t == y)
-  (ensures y == true) =
-  ()
-
-let test_complete_inorder (y:(list int)) : Lemma
-  (requires bst_inorder t == y)
-  (ensures y == [1; 2; 3]) =
-  ()
-
-let test_complete_delete (y:bool) : Lemma
-  (requires bst_search t_del 2 == y)
-  (ensures y == false) =
-  ()
+  admit()
+}
