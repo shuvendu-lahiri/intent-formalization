@@ -15,7 +15,7 @@ module SZ = FStar.SizeT
 let completeness_gcd_12_8 (result: SZ.t) : Lemma
   (requires SZ.v result == gcd_spec 12 8)
   (ensures SZ.v result == 4)
-= admit()
+= assert_norm (gcd_spec 12 8 == 4)
 #pop-options
 
 ```pulse

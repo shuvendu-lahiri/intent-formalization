@@ -13,7 +13,7 @@ module GR = Pulse.Lib.GhostReference
 let completeness_modexp_2_10_1000 (result: int) : Lemma
   (requires result == mod_exp_spec 2 10 1000)
   (ensures result == 24)
-= admit()
+= assert_norm (mod_exp_spec 2 10 1000 == 24)
 #pop-options
 
 ```pulse

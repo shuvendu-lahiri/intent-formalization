@@ -11,7 +11,7 @@ open CLRS.Ch33.Segments.Spec
 let completeness_segments_intersect (result: bool) : Lemma
   (requires result == segments_intersect_spec 0 0 2 0 1 (-1) 1 1)
   (ensures result == true)
-= admit()
+= assert_norm (segments_intersect_spec 0 0 2 0 1 (-1) 1 1 == true)
 #pop-options
 
 ```pulse
