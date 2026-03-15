@@ -18,7 +18,9 @@ let dfs_complete (scolor sd sf: Seq.seq int) : Lemma
   (requires
     Seq.length scolor == 3 /\
     Seq.length sd == 3 /\
-    Seq.length sf == 3)
+    Seq.length sf == 3 /\
+    (forall (u: nat). u < 3 ==> Seq.index scolor u == 2) /\
+    (forall (u: nat). u < 3 ==> Seq.index sd u < Seq.index sf u))
   (ensures
     Seq.index scolor 0 == 2 /\
     Seq.index scolor 1 == 2 /\
@@ -27,7 +29,12 @@ let dfs_complete (scolor sd sf: Seq.seq int) : Lemma
     Seq.index sd 1 < Seq.index sf 1 /\
     Seq.index sd 2 < Seq.index sf 2)
 =
-  admit()
+  assert (Seq.index scolor 0 == 2);
+  assert (Seq.index scolor 1 == 2);
+  assert (Seq.index scolor 2 == 2);
+  assert (Seq.index sd 0 < Seq.index sf 0);
+  assert (Seq.index sd 1 < Seq.index sf 1);
+  assert (Seq.index sd 2 < Seq.index sf 2)
 
 ```pulse
 fn test_dfs ()

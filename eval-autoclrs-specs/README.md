@@ -99,8 +99,8 @@ Proofs are being discharged incrementally — verified proofs are marked ✅.
 | # | Algorithm | Ch | Impl Function | Test File | Proof |
 |---|-----------|-----|---------------|-----------|-------|
 | 28 | UnionFind | ch21 | `make_set`, `union`, `find_set` | [Test.UnionFind.fst](intree-tests/ch21-disjoint-sets/Test.UnionFind.fst) | ✅ |
-| 29 | BFS | ch22 | `queue_bfs` | [Test.BFS.fst](intree-tests/ch22-elementary-graph/Test.BFS.fst) | admit |
-| 30 | DFS | ch22 | `stack_dfs` | [Test.DFS.fst](intree-tests/ch22-elementary-graph/Test.DFS.fst) | admit |
+| 29 | BFS | ch22 | `queue_bfs` | [Test.BFS.fst](intree-tests/ch22-elementary-graph/Test.BFS.fst) | ✅ |
+| 30 | DFS | ch22 | `stack_dfs` | [Test.DFS.fst](intree-tests/ch22-elementary-graph/Test.DFS.fst) | ✅ |
 | 31 | TopologicalSort | ch22 | `topological_sort` | [Test.TopologicalSort.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort.fst) | ✅ |
 
 ### MST & Shortest Paths (ch23, ch24, ch25, ch26)
