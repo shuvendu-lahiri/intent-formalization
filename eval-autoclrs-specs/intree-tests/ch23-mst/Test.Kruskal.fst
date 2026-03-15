@@ -60,8 +60,11 @@ fn test_kruskal ()
   kruskal adj edge_u edge_v edge_count 2sz;
 
   with seu. assert (A.pts_to edge_u seu);
+  assert (pure (Seq.length seu == 2));
   with sev. assert (A.pts_to edge_v sev);
+  assert (pure (Seq.length sev == 2));
   with ec. assert (R.pts_to edge_count ec);
+  assert (pure (result_is_forest_adj sadj seu sev 2 (SZ.v ec)));
 
   kruskal_complete sadj seu sev ec;
 

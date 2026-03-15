@@ -39,7 +39,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 
 **48 tests total — 41 call Pulse implementation functions, 7 are pure spec tests (no Impl module exists)**
 
-**40 completeness proofs discharged ✅, 8 remaining with admit().**
+**42 completeness proofs discharged ✅, 6 remaining with admit().**
 
 ### Sorting (ch02, ch06, ch07, ch08)
 
@@ -75,7 +75,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 | 18 | Queue | ch10 | `enqueue`, `dequeue` | [Test.Queue.fst](intree-tests/ch10-elementary-ds/Test.Queue.fst) | ✅ |
 | 19 | HashTable | ch11 | `hash_insert`, `hash_search` | [Test.HashTable.fst](intree-tests/ch11-hash-tables/Test.HashTable.fst) | admit |
 | 20 | BST | ch12 | `tree_insert`, `tree_search` | [Test.BST.fst](intree-tests/ch12-bst/Test.BST.fst) | ✅ |
-| 21 | BSTArray | ch12 | `tree_search` | [Test.BSTArray.fst](intree-tests/ch12-bst/Test.BSTArray.fst) | admit |
+| 21 | BSTArray | ch12 | `tree_search` | [Test.BSTArray.fst](intree-tests/ch12-bst/Test.BSTArray.fst) | ✅ |
 | 22 | RBTree | ch13 | *(spec only — upstream build error)* | [Test.RBTree.fst](intree-tests/ch13-rbtree/Test.RBTree.fst) | ✅ |
 
 ### Dynamic Programming (ch15)
@@ -111,7 +111,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 | 34 | BellmanFord | ch24 | `bellman_ford` | [Test.BellmanFord.fst](intree-tests/ch24-sssp/Test.BellmanFord.fst) | admit |
 | 35 | Dijkstra | ch24 | `dijkstra` | [Test.Dijkstra.fst](intree-tests/ch24-sssp/Test.Dijkstra.fst) | admit |
 | 36 | FloydWarshall | ch25 | `floyd_warshall` | [Test.FloydWarshall.fst](intree-tests/ch25-apsp/Test.FloydWarshall.fst) | ✅ |
-| 37 | MaxFlow | ch26 | `max_flow` | [Test.MaxFlow.fst](intree-tests/ch26-max-flow/Test.MaxFlow.fst) | admit |
+| 37 | MaxFlow | ch26 | `max_flow` | [Test.MaxFlow.fst](intree-tests/ch26-max-flow/Test.MaxFlow.fst) | ✅ |
 
 ### Number Theory (ch31)
 

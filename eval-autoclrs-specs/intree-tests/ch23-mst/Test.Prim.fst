@@ -51,8 +51,10 @@ fn test_prim ()
   let key = fst res;
   let parent = snd res;
 
-  with key_seq. assert (V.pts_to key key_seq);
-  with parent_seq. assert (V.pts_to parent parent_seq);
+  with key_seq. assert (V.pts_to (fst res) key_seq);
+  rewrite (V.pts_to (fst res) key_seq) as (V.pts_to key key_seq);
+  with parent_seq. assert (V.pts_to (snd res) parent_seq);
+  rewrite (V.pts_to (snd res) parent_seq) as (V.pts_to parent parent_seq);
 
   prim_complete weights_seq key_seq parent_seq;
 

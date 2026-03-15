@@ -1,6 +1,8 @@
 module Test.MaxFlow
 #lang-pulse
 
+friend CLRS.Ch26.MaxFlow.Impl
+
 open Pulse.Lib.Pervasives
 open Pulse.Lib.Array
 open FStar.SizeT
@@ -20,7 +22,7 @@ let max_flow_caps_ok (cap_seq: Seq.seq int) : Lemma
     Seq.index cap_seq 2 == 0 /\ Seq.index cap_seq 3 == 0)
   (ensures valid_caps cap_seq 2)
 =
-  admit()
+  assert_norm (valid_caps cap_seq 2)
 
 let max_flow_complete (cap_seq flow_seq: Seq.seq int) : Lemma
   (requires

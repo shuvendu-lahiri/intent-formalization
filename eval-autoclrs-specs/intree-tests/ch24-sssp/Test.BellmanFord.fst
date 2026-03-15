@@ -26,7 +26,7 @@ let bellman_ford_input_ok (sweights: Seq.seq int) : Lemma
     Seq.index sweights 2 == SP.inf /\ Seq.index sweights 3 == 0)
   (ensures weights_in_range sweights 2)
 =
-  admit()
+  assert_norm (weights_in_range sweights 2)
 
 let bellman_ford_complete (sweights sdist: Seq.seq int) (ok: bool) : Lemma
   (requires

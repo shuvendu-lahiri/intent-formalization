@@ -26,7 +26,7 @@ let dijkstra_input_ok (sweights: Seq.seq int) : Lemma
     Seq.index sweights 6 == SP.inf /\ Seq.index sweights 7 == SP.inf /\ Seq.index sweights 8 == 0)
   (ensures all_weights_non_negative sweights /\ weights_in_range sweights 3)
 =
-  admit()
+  assert_norm (all_weights_non_negative sweights /\ weights_in_range sweights 3)
 
 let dijkstra_complete (sweights: Seq.seq int) (sdist: Seq.seq int) (spred: Seq.seq SZ.t) : Lemma
   (requires
