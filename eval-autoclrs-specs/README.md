@@ -43,7 +43,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 
 **43 second completeness examples ✅** — verifying that completeness holds for a different input to the same algorithm. 5 algorithms with ❌ first examples have no 2nd example (spec too weak for any input).
 
-**5 non-determinism tests ❌ᴺ** — algorithms where the spec *is* complete for the original test input (unique output) but *not* for an alternative input where multiple valid outputs exist. These demonstrate that completeness can be **input-dependent** when the postcondition is relational rather than functional.
+**5 non-determinism tests 🔀** — algorithms where an alternative input admits multiple valid outputs. These are not completeness failures; the spec correctly allows non-deterministic behavior. **TODO:** extend our methodology to verify completeness for non-deterministic outputs (e.g., verify the output is *one of* the valid possibilities).
 
 ### Sorting (ch02, ch06, ch07, ch08)
 
@@ -62,7 +62,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 | # | Algorithm | Ch | Impl Function | Completeness | 2nd Example |
 |---|-----------|-----|---------------|--------------|-------------|
 | 8 | BinarySearch | ch04 | [`binary_search`](autoclrs/autoclrs/ch04-divide-conquer/CLRS.Ch04.BinarySearch.Impl.fsti) | [Test.BinarySearch.fst](intree-tests/ch04-divide-conquer/Test.BinarySearch.fst) ✅ | [Test.BinarySearch3.fst](intree-tests/ch04-divide-conquer/Test.BinarySearch3.fst) ✅ |
-| | ↳ *non-det* | | input `[1,3,3,5]` key=3: index 1 *and* 2 valid | [Test.BinarySearch2.fst](intree-tests/ch04-divide-conquer/Test.BinarySearch2.fst) ❌ᴺ | |
+| | ↳ *non-det* | | input `[1,3,3,5]` key=3: index 1 *and* 2 valid | [Test.BinarySearch2.fst](intree-tests/ch04-divide-conquer/Test.BinarySearch2.fst) 🔀 | |
 | 9 | MaxSubarray | ch04 |*(spec only)* | [Test.MaxSubarray.fst](intree-tests/ch04-divide-conquer/Test.MaxSubarray.fst) ✅ | [Test.MaxSubarray2.fst](intree-tests/ch04-divide-conquer/Test.MaxSubarray2.fst) ✅ |
 | 10 | MatrixMultiply | ch04 | [`matrix_multiply`](autoclrs/autoclrs/ch04-divide-conquer/CLRS.Ch04.MatrixMultiply.Impl.fsti) | [Test.MatrixMultiply.fst](intree-tests/ch04-divide-conquer/Test.MatrixMultiply.fst) ✅ | [Test.MatrixMultiply2.fst](intree-tests/ch04-divide-conquer/Test.MatrixMultiply2.fst) ✅ |
 | 11 | MinMax | ch09 | [`find_minimum`](autoclrs/autoclrs/ch09-order-statistics/CLRS.Ch09.MinMax.Impl.fsti) | [Test.MinMax.fst](intree-tests/ch09-order-statistics/Test.MinMax.fst) ✅ | [Test.MinMax2.fst](intree-tests/ch09-order-statistics/Test.MinMax2.fst) ✅ |
@@ -96,7 +96,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 | # | Algorithm | Ch | Impl Function | Completeness | 2nd Example |
 |---|-----------|-----|---------------|--------------|-------------|
 | 26 | ActivitySelection | ch16 | [`activity_selection`](autoclrs/autoclrs/ch16-greedy/CLRS.Ch16.ActivitySelection.Impl.fsti) | [Test.ActivitySelection.fst](intree-tests/ch16-greedy/Test.ActivitySelection.fst) ✅ | [Test.ActivitySelection3.fst](intree-tests/ch16-greedy/Test.ActivitySelection3.fst) ✅ |
-| | ↳ *non-det* | | activities (1,2),(2,3),(2,3): either activity 1 or 2 valid | [Test.ActivitySelection2.fst](intree-tests/ch16-greedy/Test.ActivitySelection2.fst) ❌ᴺ | |
+| | ↳ *non-det* | | activities (1,2),(2,3),(2,3): either activity 1 or 2 valid | [Test.ActivitySelection2.fst](intree-tests/ch16-greedy/Test.ActivitySelection2.fst) 🔀 | |
 | 27 | Huffman | ch16 | [`huffman_tree`](autoclrs/autoclrs/ch16-greedy/CLRS.Ch16.Huffman.Impl.fsti) | [Test.Huffman.fst](intree-tests/ch16-greedy/Test.Huffman.fst) ✅ | [Test.Huffman2.fst](intree-tests/ch16-greedy/Test.Huffman2.fst) ✅ |
 
 ### Union-Find & Graphs (ch21, ch22)
@@ -106,9 +106,9 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 | 28 | UnionFind | ch21 | [`make_set`, `union`, `find_set`](autoclrs/autoclrs/ch21-disjoint-sets/CLRS.Ch21.UnionFind.Impl.fsti) | [Test.UnionFind.fst](intree-tests/ch21-disjoint-sets/Test.UnionFind.fst) ✅ | [Test.UnionFind2.fst](intree-tests/ch21-disjoint-sets/Test.UnionFind2.fst) ✅ |
 | 29 | BFS | ch22 | [`queue_bfs`](autoclrs/autoclrs/ch22-elementary-graph/CLRS.Ch22.BFS.Impl.fsti) | [Test.BFS.fst](intree-tests/ch22-elementary-graph/Test.BFS.fst) ✅ | [Test.BFS2.fst](intree-tests/ch22-elementary-graph/Test.BFS2.fst) ✅ |
 | 30 | DFS | ch22 | [`stack_dfs`](autoclrs/autoclrs/ch22-elementary-graph/CLRS.Ch22.DFS.Impl.fsti) | [Test.DFS.fst](intree-tests/ch22-elementary-graph/Test.DFS.fst) ✅ | [Test.DFS3.fst](intree-tests/ch22-elementary-graph/Test.DFS3.fst) ✅ |
-| | ↳ *non-det* | | fork graph 0→1,0→2: d[1]=2 or d[1]=4 depending on visit order | [Test.DFS2.fst](intree-tests/ch22-elementary-graph/Test.DFS2.fst) ❌ᴺ | |
+| | ↳ *non-det* | | fork graph 0→1,0→2: d[1]=2 or d[1]=4 depending on visit order | [Test.DFS2.fst](intree-tests/ch22-elementary-graph/Test.DFS2.fst) 🔀 | |
 | 31 | TopologicalSort | ch22 | [`topological_sort`](autoclrs/autoclrs/ch22-elementary-graph/CLRS.Ch22.TopologicalSort.Impl.fsti) | [Test.TopologicalSort.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort.fst) ✅ | [Test.TopologicalSort3.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort3.fst) ✅ |
-| | ↳ *non-det* | | fork graph 0→1,0→2: [0,1,2] *and* [0,2,1] both valid | [Test.TopologicalSort2.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort2.fst) ❌ᴺ | |
+| | ↳ *non-det* | | fork graph 0→1,0→2: [0,1,2] *and* [0,2,1] both valid | [Test.TopologicalSort2.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort2.fst) 🔀 | |
 
 ### MST & Shortest Paths (ch23, ch24, ch25, ch26)
 
@@ -118,7 +118,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 | 33 | Prim | ch23 | [`prim`](autoclrs/autoclrs/ch23-mst/CLRS.Ch23.Prim.Impl.fsti) | [Test.Prim.fst](intree-tests/ch23-mst/Test.Prim.fst) ❌ | — |
 | 34 | BellmanFord | ch24 | [`bellman_ford`](autoclrs/autoclrs/ch24-sssp/CLRS.Ch24.BellmanFord.Impl.fsti) | [Test.BellmanFord.fst](intree-tests/ch24-sssp/Test.BellmanFord.fst) ❌ | — |
 | 35 | Dijkstra | ch24 | [`dijkstra`](autoclrs/autoclrs/ch24-sssp/CLRS.Ch24.Dijkstra.Impl.fsti) | [Test.Dijkstra.fst](intree-tests/ch24-sssp/Test.Dijkstra.fst) ✅ | [Test.Dijkstra3.fst](intree-tests/ch24-sssp/Test.Dijkstra3.fst) ✅ |
-| | ↳ *non-det* | | diamond 0→1→3, 0→2→3 (equal weight): pred[3]=1 *or* 2 | [Test.Dijkstra2.fst](intree-tests/ch24-sssp/Test.Dijkstra2.fst) ❌ᴺ | |
+| | ↳ *non-det* | | diamond 0→1→3, 0→2→3 (equal weight): pred[3]=1 *or* 2 | [Test.Dijkstra2.fst](intree-tests/ch24-sssp/Test.Dijkstra2.fst) 🔀 | |
 | 36 | FloydWarshall | ch25 | [`floyd_warshall`](autoclrs/autoclrs/ch25-apsp/CLRS.Ch25.FloydWarshall.Impl.fsti) | [Test.FloydWarshall.fst](intree-tests/ch25-apsp/Test.FloydWarshall.fst) ✅ | [Test.FloydWarshall2.fst](intree-tests/ch25-apsp/Test.FloydWarshall2.fst) ✅ |
 | 37 | MaxFlow | ch26 | [`max_flow`](autoclrs/autoclrs/ch26-max-flow/CLRS.Ch26.MaxFlow.Impl.fsti) | [Test.MaxFlow.fst](intree-tests/ch26-max-flow/Test.MaxFlow.fst) ✅ | [Test.MaxFlow2.fst](intree-tests/ch26-max-flow/Test.MaxFlow2.fst) ✅ |
 
@@ -157,7 +157,7 @@ pinned to commit [`1984af1`](https://github.com/FStarLang/AutoCLRS/tree/1984af1a
 
 - **Impl Function**: the Pulse implementation function called in the test (from `*.Impl` module). Links to the `.fsti` in the AutoCLRS submodule.
 - *(spec only)*: no `Impl` module exists in AutoCLRS; test uses pure F\* spec functions
-- **Completeness**: linked test file with result — ✅ = completeness proved, ❌ = spec incomplete (postcondition too weak to determine output), ❌ᴺ = non-determinism (spec complete for original input, incomplete for alternative input with multiple valid outputs)
+- **Completeness**: linked test file with result — ✅ = completeness proved, ❌ = spec incomplete (postcondition too weak to determine output), 🔀 = non-deterministic test (multiple valid outputs exist for this input)
 - **2nd Example**: a second test with different input, same format
 
 ### Completeness Failures (❌)
@@ -172,11 +172,11 @@ These 5 algorithms have postconditions that are **too weak to uniquely determine
 | BellmanFord | postcondition allows `ok=false` (negative cycle detected), but this graph has no negative cycles — spec doesn't expose this |
 | VertexCover | `is_cover` + 2-approx bound satisfied by `[1,0]` as well as `[1,1]` — spec doesn't force both endpoints |
 
-### Input-Dependent Completeness (❌ᴺ)
+### Non-Deterministic Tests (🔀)
 
-These 5 algorithms have specs that **are** complete for the original test input (where the output is uniquely determined) but **fail** for an alternative input where multiple valid outputs exist. This demonstrates that completeness is **input-dependent** for relational (non-functional) postconditions:
+These 5 algorithms have inputs where **multiple valid outputs** exist — the spec correctly permits non-deterministic behavior. These are *not* completeness failures; the postcondition is appropriately relational. **TODO:** extend our methodology to verify completeness for non-deterministic outputs (e.g., verify the output is *one of* the valid possibilities).
 
-| Algorithm | Original Input (✅ unique) | Alternative Input (❌ᴺ non-unique) |
+| Algorithm | Original Input (✅ unique) | Alternative Input (🔀 non-unique) |
 |-----------|---------------------------|--------------------------------------|
 | BinarySearch | `[1,2,3,4,5]` key=3 → index 2 (unique) | `[1,3,3,5]` key=3 → index 1 *or* 2 |
 | DFS | chain 0→1→2 → timestamps unique | fork 0→1,0→2 → d[1]=2 or d[1]=4 |
