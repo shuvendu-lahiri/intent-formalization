@@ -184,7 +184,7 @@ These 5 algorithms have inputs where **multiple valid outputs** exist — the sp
 | Dijkstra | unique shortest paths → pred unique | diamond 0→{1,2}→3 equal weight → pred[3]=1 or 2 |
 | ActivitySelection | distinct finish times → unique greedy set | tied finish times (2,3),(2,3) → activity 1 or 2 |
 
-### Example: Topological Sort — Complete vs Incomplete
+### Example: Topological Sort — Complete vs Non-Deterministic
 
 The [`topological_sort`](autoclrs/autoclrs/ch22-elementary-graph/CLRS.Ch22.TopologicalSort.Impl.fsti) implementation has the postcondition:
 ```
@@ -224,7 +224,7 @@ fn test_topological_sort () requires emp ensures emp
 
 **F\* verifies this** — the postcondition is strong enough to prove the output.
 
-#### ❌ Incomplete: fork graph 0→1, 0→2
+#### 🔀 Non-Deterministic: fork graph 0→1, 0→2
 
 With edges 0→1 and 0→2 (no edge between 1 and 2), **two** valid topological orders exist: `[0, 1, 2]` and `[0, 2, 1]`.
 
@@ -235,15 +235,14 @@ let completeness_topo_v2 (sout adj: Seq.seq int) : Lemma
     all_distinct (seq_int_to_nat sout) /\
     is_topological_order adj 3 (seq_int_to_nat sout))
   (ensures Seq.index sout 0 == 0 /\ Seq.index sout 1 == 1 /\ Seq.index sout 2 == 2)
-= admit()  (* ❌ unprovable — [0,2,1] also satisfies the postcondition *)
+= admit()  (* 🔀 unprovable — [0,2,1] also satisfies the postcondition *)
 ```
 
-**F\* rejects this** — the postcondition is too weak to distinguish between the two valid orderings.
-This is exactly the kind of spec incompleteness the evaluation is designed to detect.
+**F\* rejects this** — the postcondition correctly allows both valid orderings; the output is non-deterministic for this input.
 
 Both tests are in the repository:
 - [Test.TopologicalSort.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort.fst) — ✅ chain graph (complete)
-- [Test.TopologicalSort2.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort2.fst) — ❌ fork graph (incomplete)
+- [Test.TopologicalSort2.fst](intree-tests/ch22-elementary-graph/Test.TopologicalSort2.fst) — 🔀 fork graph (non-deterministic)
 
 ## Reproducing the Verification
 
